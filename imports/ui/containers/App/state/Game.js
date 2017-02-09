@@ -1,5 +1,6 @@
 import Phaser from '/imports/startup/phaser-split.js';
-import Mushroom from './../sprite/Mushroom'
+import Player from './../sprite/Player'
+import Platform from './../sprite/Platform'
 
 export default class extends Phaser.State {
   init () {
@@ -8,24 +9,21 @@ export default class extends Phaser.State {
   preload () { }
 
   create () {
-    const bannerText = 'Phaser + ES6 + Webpack'
-    let banner = this.add.text(this.world.centerX, this.game.height - 80, bannerText)
-    banner.font = 'Bangers'
-    banner.padding.set(10, 16)
-    banner.fontSize = 40
-    banner.fill = '#77BFA3'
-    banner.smoothed = false
-    banner.anchor.setTo(0.5)
-
-    this.mushroom = new Mushroom({
+    this.player = new Player({
       game: this,
       x: this.world.centerX,
       y: this.world.centerY,
-      asset: 'mushroom',  
+      asset: 'player',  
     })
-
-    this.game.add.existing(this.mushroom)
-    
+    this.platform1 = new Platform({
+       game: this,
+      x: 200,
+      y: 200,
+      asset: 'platform',  
+    })
+     this.game.add.existing(this.player)
+     this.game.physics.arcade.enable(this.player);
+     this.player.body.collideWorldBounds = true;
   }
   
   render () {
