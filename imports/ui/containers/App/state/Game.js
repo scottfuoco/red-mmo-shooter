@@ -12,6 +12,8 @@ export default class extends Phaser.State {
   }
 
   create() {
+    this.physics.startSystem(Phaser.Physics.ARCADE);
+
     this.player = new Player({
       game: this,
       x: this.world.centerX,
@@ -41,23 +43,24 @@ export default class extends Phaser.State {
     this.dj.physicsBodyType = Phaser.Physics.ARCADE;
 
 
+
     this.firingTimer = 0;
     this.bulletTime = 0;
 
     this.bullets = this.add.group();
     this.bullets.enableBody = true;
-    this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
-    // this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
-    this.bullets.createMultiple(30, 'bullet');
+
+    this.bullets.createMultiple(10, 'bullet');
     this.bullets.setAll('anchor.x', .5);
     this.bullets.setAll('anchor.y', 0.5);
     this.bullets.setAll('outOfBoundsKill', true);
     this.bullets.setAll('checkWorldBounds', true);
-
+    this.physics.arcade.enable([this.bullets, this.dj, this.platforms]); 
     this.fireButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-
+    
     this.game.add.existing(this.dj);
     this.game.add.existing(this.player)
+
   }
   update() {
     this.game.physics.arcade.collide(this.player, this.platforms);
@@ -66,7 +69,9 @@ export default class extends Phaser.State {
     if (this.fireButton.isDown) {
       this.fireBullet();
     }
-    // this.physics.arcade.overlap(this.bullets, this.DJ, this.collisionHandler, null, this);
+    this.physics.arcade.collide(this.bullets, this.dj, this.collisionHandler, null, this);
+    this.physics.arcade.collide(this.bullets, this.platforms, this.collisionHandler2, null, this);
+    //this.physics.arcade.overlap(this.bullets, this.DJ, this.collisionHandler, null, this);
   }
 
   fireBullet() {
@@ -91,14 +96,24 @@ export default class extends Phaser.State {
     bullet.kill();
 
   }
-
+  collisionHandler2(bullet, platform) {
+    console.log(bullet);
+console.log('$$$$$$$$$$$$$$$$$$$$$$$$44');
+    console.log(DJ)
+    //  When a bullet hits an alien we kill them both
+    bullet.kill();
+  }
   collisionHandler(bullet, DJ) {
-    console.log('hi');
+    console.log(bullet);
+console.log('$$$$$$$$$$$$$$$$$$$$$$$$44');
+    console.log(DJ)
     //  When a bullet hits an alien we kill them both
     bullet.kill();
     DJ.kill();
   }
   render() {
-
+    this.game.debug.body(this.dj);
+    this.game.debug.body(this.bullets);
+    this.game.debug.body(this.player);
   }
 }
