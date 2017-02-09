@@ -31,7 +31,7 @@ export default class extends Phaser.Sprite {
       console.log("jump?")
       this.body.velocity.y = -400;
     }
-    Stats.upsert({ _id: 1 }, {// TODO change _ID to userid
+    Stats.upsert({ _id: 1 }, {// TODO change this to socket?
       $set: {
         x: this.body.x,
         y: this.body.y

@@ -83,7 +83,6 @@ export default class extends Phaser.State {
         this.bulletTime = this.game.time.now + 200;
       }
     }
-
   }
   resetBullet(bullet) {
 
