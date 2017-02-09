@@ -1,32 +1,36 @@
 import Phaser from '/imports/startup/phaser-split.js';
 import Player from './../sprite/Player'
-import Platform from './../sprite/Platform'
 
 export default class extends Phaser.State {
-  init () {
+  init() {
 
   }
-  preload () { }
+  preload() { }
 
-  create () {
+  create() {
     this.player = new Player({
       game: this,
       x: this.world.centerX,
       y: this.world.centerY,
-      asset: 'player',  
+      asset: 'player',
     })
-    this.platform1 = new Platform({
-       game: this,
-      x: 200,
-      y: 200,
-      asset: 'platform',  
-    })
-     this.game.add.existing(this.player)
-     this.game.physics.arcade.enable(this.player);
-     this.player.body.collideWorldBounds = true;
-  }
-  
-  render () {
+
+    this.platforms = this.game.add.physicsGroup();
+    this.platforms.create(500, 150, 'platform');
+    this.platforms.create(-200, 300, 'platform');
+    this.platforms.create(400, 450, 'platform');
+    this.platforms.setAll('body.immovable', true)
+
+    this.game.add.existing(this.player)
+
+    this.game.physics.arcade.enable(this.player);
+    this.player.body.collideWorldBounds = true;
     
+  }
+  update(){
+    this.game.physics.arcade.collide(this.player, this.platforms);
+  }
+  render() {
+
   }
 }
