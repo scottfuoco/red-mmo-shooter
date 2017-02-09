@@ -25,8 +25,10 @@ export default class extends Phaser.State {
     })
 
     this.game.add.existing(this.mushroom)
+    
   }
-
+  
   render () {
+    
   }
 }
