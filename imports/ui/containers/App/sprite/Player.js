@@ -8,11 +8,12 @@ export default class extends Phaser.Sprite {
     // this.fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     this.jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     this.anchor.setTo(0.5)
+
   }
 
   update() {
     this.body.velocity.x = 0;
-    this.body.velocity.y = 0;
+    this.body.gravity.y = 500;
     if (this.cursors.left.isDown) {
       this.body.velocity.x = -250;
     }
@@ -27,6 +28,7 @@ export default class extends Phaser.Sprite {
     }
 
     if (this.jumpButton.isDown && (this.body.onFloor() || this.body.touching.down)) {
+      console.log("jump?")
       this.body.velocity.y = -400;
     }
 
