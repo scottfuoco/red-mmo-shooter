@@ -93,6 +93,7 @@ export default class extends Phaser.State {
 
   collisionHandler(bullet, DJ) {
     console.log('hi');
+    Streamy.emit('hello', { data: 'world!' });
     //  When a bullet hits an alien we kill them both
     bullet.kill();
     DJ.kill();
