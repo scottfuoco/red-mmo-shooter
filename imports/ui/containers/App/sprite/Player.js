@@ -15,15 +15,18 @@ export default class extends Phaser.Sprite {
     this.body.velocity.x = 0;
     this.body.gravity.y = 500;
     if (this.cursors.left.isDown) {
+      Streamy.emit('hello', { data: 'left!' });
       this.body.velocity.x = -250;
     }
     if (this.cursors.right.isDown) {
+      Streamy.emit('hello', { data: 'right!' });
       this.body.velocity.x = 250;
     }
     if (this.cursors.down.isDown) {
       this.body.velocity.y = 250;
     }
     if (this.cursors.up.isDown) {
+      Streamy.emit('hello', { data: 'jetpack!' });
       this.body.velocity.y = -250;
     }
 
