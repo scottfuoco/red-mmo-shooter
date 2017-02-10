@@ -8,18 +8,20 @@ export default class extends Phaser.Sprite {
     // this.fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     this.jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     this.anchor.setTo(0.5)
-
+    this.facing = "right"
   }
 
   update() {
     this.body.velocity.x = 0;
     this.body.gravity.y = 500;
     if (this.cursors.left.isDown) {
+      this.facing = "left"
       Streamy.emit('hello', { data: 'left!' });
       this.body.velocity.x = -250;
       Streamy.emit('clientMove', { data: 'left!' });
     }
     if (this.cursors.right.isDown) {
+      this.facing = "right" 
       Streamy.emit('hello', { data: 'right!' });
       this.body.velocity.x = 250;
       Streamy.emit('clientMove', { data: 'right!' });

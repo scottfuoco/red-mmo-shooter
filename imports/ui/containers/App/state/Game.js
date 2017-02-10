@@ -110,15 +110,15 @@ export default class extends Phaser.State {
 
     //  Firing?
     if (this.fireButton.isDown) {
-      this.fireBullet();
+      this.fireBullet(this.player.facing);
     }
     this.physics.arcade.collide(this.bullets, this.dj, this.collisionHandler, null, this);
     this.physics.arcade.collide(this.bullets, this.platforms, this.collisionHandler2, null, this);
     //this.physics.arcade.overlap(this.bullets, this.DJ, this.collisionHandler, null, this);
   }
 
-  fireBullet() {
-
+  fireBullet(facing) {
+    console.log(facing)
     //  To avoid them being allowed to fire too fast we set a time limit
     if (this.game.time.now > this.bulletTime) {
       //  Grab the first bullet we can from the pool
@@ -128,7 +128,14 @@ export default class extends Phaser.State {
       if (bullet) {
         //  And fire it
         bullet.reset(this.player.x, this.player.y + 8);
-        bullet.body.velocity.x = 400;
+        if (facing === "left") {
+          bullet.angle = -180;
+          bullet.body.velocity.x = -400;
+        } else {
+          bullet.body.velocity.x = 400;
+        }
+
+
         this.bulletTime = this.game.time.now + 200;
       }
     }
