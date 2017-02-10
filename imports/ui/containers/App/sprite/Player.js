@@ -17,10 +17,12 @@ export default class extends Phaser.Sprite {
     if (this.cursors.left.isDown) {
       Streamy.emit('hello', { data: 'left!' });
       this.body.velocity.x = -250;
+      Streamy.emit('clientMove', { data: 'left!' });
     }
     if (this.cursors.right.isDown) {
       Streamy.emit('hello', { data: 'right!' });
       this.body.velocity.x = 250;
+      Streamy.emit('clientMove', { data: 'right!' });
     }
     if (this.cursors.down.isDown) {
       this.body.velocity.y = 250;

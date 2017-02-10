@@ -40,29 +40,72 @@ export default class extends Phaser.State {
     this.player.body.collideWorldBounds = true;
 
 
+    this.djs = this.add.group();
+    this.djs.enableBody = true;
+    this.djs.createMultiple(10, 'dj');
+    this.djs.setAll('anchor.x', .5);
+    this.djs.setAll('anchor.y', 0.5);
+    this.djs.setAll('outOfBoundsKill', true);
+    this.djs.setAll('checkWorldBounds', true);
+
+
+
+    // single DJ
     this.dj.physicsBodyType = Phaser.Physics.ARCADE;
-
-
 
     this.firingTimer = 0;
     this.bulletTime = 0;
 
     this.bullets = this.add.group();
     this.bullets.enableBody = true;
-
     this.bullets.createMultiple(10, 'bullet');
     this.bullets.setAll('anchor.x', .5);
     this.bullets.setAll('anchor.y', 0.5);
     this.bullets.setAll('outOfBoundsKill', true);
     this.bullets.setAll('checkWorldBounds', true);
-    this.physics.arcade.enable([this.bullets, this.dj, this.platforms]); 
+
+
+    // set physics on below entities and groups
+    this.physics.arcade.enable([this.bullets, this.djs, this.dj, this.platforms]);
+
+
     this.fireButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-    
+
     this.game.add.existing(this.dj);
-    this.game.add.existing(this.player)
+    this.game.add.existing(this.player);
+    this.spawnDJ = false;
+    this.spawnDJLocation = {};
+
+
+    Streamy.on('movement', function (d, s) {
+      console.log(`from server ${d.data}`)
+    });
+
+    Streamy.on('spawnDJ', (d, s) => {
+      console.log('hi');
+      this.spawnDJ = true;
+      this.spawnDJLocation = { x: d.data.x, y: d.data.y };
+
+      console.log(this.spawnDJLocation.x);
+    });
+
+    music = this.game.add.audio('backgroundMusic');
+    bulletFire = this.game.add.audio('bulletFire');
+    music.loop = true;
+    music.play();
 
   }
   update() {
+    if (this.spawnDJ) {
+      dj = this.djs.getFirstExists(false);
+      this.spawnDJ = false;
+
+      if (dj) {
+        //  And fire it
+        dj.reset(this.spawnDJLocation.x, this.spawnDJLocation.y);
+      }
+    }
+
     this.game.physics.arcade.collide(this.player, this.platforms);
 
     //  Firing?
@@ -81,6 +124,7 @@ export default class extends Phaser.State {
       //  Grab the first bullet we can from the pool
       bullet = this.bullets.getFirstExists(false);
 
+      bulletFire.play()
       if (bullet) {
         //  And fire it
         bullet.reset(this.player.x, this.player.y + 8);
@@ -96,22 +140,20 @@ export default class extends Phaser.State {
 
   }
   collisionHandler2(bullet, platform) {
-    console.log(bullet);
-console.log('$$$$$$$$$$$$$$$$$$$$$$$$44');
-    console.log(DJ)
     //  When a bullet hits an alien we kill them both
     bullet.kill();
   }
+
   collisionHandler(bullet, DJ) {
-    console.log('hi');
-    Streamy.emit('hello', { data: 'world!' });
     //  When a bullet hits an alien we kill them both
+    Streamy.emit('DJDie', { data: { x: this.player.x, y: this.player.y } });
+
     bullet.kill();
     DJ.kill();
   }
   render() {
-    this.game.debug.body(this.dj);
-    this.game.debug.body(this.bullets);
-    this.game.debug.body(this.player);
+    // this.game.debug.body(this.dj);
+    // this.game.debug.body(this.bullets);
+    // this.game.debug.body(this.player);
   }
 }
