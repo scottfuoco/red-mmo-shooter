@@ -81,25 +81,30 @@ export default class extends Phaser.State {
       console.log(`from server ${d.data}`)
     });
 
-    Streamy.on('spawnDJ', (d,s) => {
+    Streamy.on('spawnDJ', (d, s) => {
       console.log('hi');
       this.spawnDJ = true;
-      this.spawnDJLocation = {x:d.data.x, y:d.data.y};
+      this.spawnDJLocation = { x: d.data.x, y: d.data.y };
 
       console.log(this.spawnDJLocation.x);
     });
 
+    music = this.game.add.audio('backgroundMusic');
+    bulletFire = this.game.add.audio('bulletFire');
+    music.loop = true;
+    music.play();
+
   }
   update() {
     if (this.spawnDJ) {
-        dj = this.djs.getFirstExists(false);
-        this.spawnDJ = false;
+      dj = this.djs.getFirstExists(false);
+      this.spawnDJ = false;
 
-        if (dj) {
-          //  And fire it
-          dj.reset(this.spawnDJLocation.x, this.spawnDJLocation.y);
-        }
+      if (dj) {
+        //  And fire it
+        dj.reset(this.spawnDJLocation.x, this.spawnDJLocation.y);
       }
+    }
 
     this.game.physics.arcade.collide(this.player, this.platforms);
 
@@ -119,6 +124,7 @@ export default class extends Phaser.State {
       //  Grab the first bullet we can from the pool
       bullet = this.bullets.getFirstExists(false);
 
+      bulletFire.play()
       if (bullet) {
         //  And fire it
         bullet.reset(this.player.x, this.player.y + 8);
@@ -140,14 +146,14 @@ export default class extends Phaser.State {
 
   collisionHandler(bullet, DJ) {
     //  When a bullet hits an alien we kill them both
-    Streamy.emit('DJDie', { data: {x: this.player.x, y: this.player.y}});
+    Streamy.emit('DJDie', { data: { x: this.player.x, y: this.player.y } });
 
     bullet.kill();
     DJ.kill();
   }
   render() {
-    this.game.debug.body(this.dj);
-    this.game.debug.body(this.bullets);
-    this.game.debug.body(this.player);
+    // this.game.debug.body(this.dj);
+    // this.game.debug.body(this.bullets);
+    // this.game.debug.body(this.player);
   }
 }

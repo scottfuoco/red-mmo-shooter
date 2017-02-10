@@ -14,8 +14,11 @@ export default class extends Phaser.State {
     // load your assets
     //
     this.load.image('platform', 'img/platform.png');
-    this.load.image('player', 'img/mushroom2.png')
-    this.load.image('dj', 'img/dj1.png')
+    this.load.image('player', 'img/mushroom2.png');
+    this.load.image('dj', 'img/dj1.png');
+
+    this.load.audio('backgroundMusic', ['audio/backgroundMusic.mp3']);
+    this.load.audio('bulletFire', ['audio/bulletFire.mp3']);
   }
 
   create () {
