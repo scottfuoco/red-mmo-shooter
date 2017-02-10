@@ -29,9 +29,9 @@ export default class extends Phaser.State {
     })
 
     this.platforms = this.game.add.physicsGroup();
-    this.platforms.create(500, 150, 'platform');
-    this.platforms.create(-200, 300, 'platform');
-    this.platforms.create(400, 450, 'platform');
+    this.platforms.create(50, 150, 'platform');
+    // this.platforms.create(200, 300, 'platform');
+    // this.platforms.create(400, 350, 'platform');
     this.platforms.setAll('body.immovable', true)
 
 
@@ -88,7 +88,6 @@ export default class extends Phaser.State {
         this.bulletTime = this.game.time.now + 200;
       }
     }
-
   }
   resetBullet(bullet) {
 
@@ -104,9 +103,8 @@ console.log('$$$$$$$$$$$$$$$$$$$$$$$$44');
     bullet.kill();
   }
   collisionHandler(bullet, DJ) {
-    console.log(bullet);
-console.log('$$$$$$$$$$$$$$$$$$$$$$$$44');
-    console.log(DJ)
+    console.log('hi');
+    Streamy.emit('hello', { data: 'world!' });
     //  When a bullet hits an alien we kill them both
     bullet.kill();
     DJ.kill();

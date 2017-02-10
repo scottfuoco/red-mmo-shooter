@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Phaser from '/imports/startup/phaser-split.js';
+import AccountsUIWrapper from './../../components/AccountsUiWrapper'
 
 import BootState from './state/Boot'
 import SplashState from './state/Splash'
@@ -33,10 +34,16 @@ class App extends Component {
 
   render() {
     return (
-      <div id="game">
+      <div>
+        <div id="game">
 
+        </div>
+        <div className="login-wrapper">
+          <AccountsUIWrapper />
+        </div>
       </div>
     );
+
   }
 }
 
