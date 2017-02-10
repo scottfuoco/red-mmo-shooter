@@ -16,21 +16,16 @@ export default class extends Phaser.Sprite {
     this.body.gravity.y = 500;
     if (this.cursors.left.isDown) {
       this.facing = "left"
-      Streamy.emit('hello', { data: 'left!' });
       this.body.velocity.x = -250;
-      Streamy.emit('clientMove', { data: 'left!' });
+      Streamy.emit('clientMove', { data: 'left!' });//TODO Make data into socketId
     }
     if (this.cursors.right.isDown) {
       this.facing = "right" 
-      Streamy.emit('hello', { data: 'right!' });
       this.body.velocity.x = 250;
-      Streamy.emit('clientMove', { data: 'right!' });
-    }
-    if (this.cursors.down.isDown) {
-      this.body.velocity.y = 250;
+      Streamy.emit('clientMove', { data: 'right!' }); //TODO Make data into socketId
     }
     if (this.cursors.up.isDown) {
-      Streamy.emit('hello', { data: 'jetpack!' });
+      Streamy.emit('clientJetpack', { data: 'jetpack!' });  //TODO Make data into socketId
       this.body.velocity.y = -250;
     }
 

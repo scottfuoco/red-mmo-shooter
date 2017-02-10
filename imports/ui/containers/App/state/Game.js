@@ -1,6 +1,7 @@
 import Phaser from '/imports/startup/phaser-split.js';
 import Player from './../sprite/Player';
 import DJ from './../sprite/DJ';
+// import bullet from 
 export default class extends Phaser.State {
   init() {
 
@@ -118,12 +119,12 @@ export default class extends Phaser.State {
   }
 
   fireBullet(facing) {
-    console.log(facing)
+    
     //  To avoid them being allowed to fire too fast we set a time limit
     if (this.game.time.now > this.bulletTime) {
       //  Grab the first bullet we can from the pool
       bullet = this.bullets.getFirstExists(false);
-
+      
       bulletFire.play()
       if (bullet) {
         //  And fire it
@@ -131,10 +132,12 @@ export default class extends Phaser.State {
         if (facing === "left"){
           bullet.angle = -180;
           bullet.body.velocity.x = -400;
+          Streamy.emit('bulletFire', { bulletx: this.player.x, bullety: this.player.y});
         }
         if (facing === 'right'){
           bullet.angle = 0;
           bullet.body.velocity.x = 400;
+          Streamy.emit('bulletFire', { bulletx: this.player.x, bullety: this.player.y});
         }
 
 

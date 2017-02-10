@@ -13,6 +13,9 @@ Meteor.startup(() => {
     Streamy.broadcast('spawnDJ', { data: { x:d.data.x, y:d.data.y } })
 
   })
+  Streamy.on('bulletFire', (d , s)=>{
+    // Streamy.broadcast('spawnDJ', { data: { x:d.bulletx, y:d.bullety } })
+  })
 
 });
 Meteor.onConnection(() => {
