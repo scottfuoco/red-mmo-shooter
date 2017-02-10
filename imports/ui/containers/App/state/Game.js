@@ -129,7 +129,7 @@ export default class extends Phaser.State {
       if (bullet) {
         //  And fire it
         bullet.reset(this.player.x, this.player.y + 8);
-        if (facing === "left"){
+        if (facing === 'left'){
           bullet.angle = -180;
           bullet.body.velocity.x = -400;
           Streamy.emit('bulletFire', { bulletx: this.player.x, bullety: this.player.y});
