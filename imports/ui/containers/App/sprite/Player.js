@@ -1,5 +1,5 @@
 import Phaser from '/imports/startup/phaser-split.js';
-
+import DJ from './DJ';
 export default class extends Phaser.Sprite {
 
   constructor({ game, x, y, asset }) {
@@ -9,6 +9,7 @@ export default class extends Phaser.Sprite {
     this.jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     this.anchor.setTo(0.5)
 
+
   }
 
   update() {
@@ -16,22 +17,28 @@ export default class extends Phaser.Sprite {
     this.body.gravity.y = 500;
     if (this.cursors.left.isDown) {
       this.body.velocity.x = -250;
-      Streamy.emit('clientMove', { data: 'left!' });
+      //Streamy.emit('clientMove', { id: Streamy.id(), data: {direction:'left', x: this.x, y:this.y} });
     }
     if (this.cursors.right.isDown) {
       this.body.velocity.x = 250;
-      Streamy.emit('clientMove', { data: 'right!' });
+      //Streamy.emit('clientMove', { id: Streamy.id(), data: {direction:'right', x: this.x, y:this.y} });
     }
     if (this.cursors.down.isDown) {
+      //Streamy.emit('clientMove', { id: Streamy.id(), data: {direction:'right', x: this.x, y:this.y} });
       this.body.velocity.y = 250;
     }
     if (this.cursors.up.isDown) {
+      //Streamy.emit('clientMove', { id: Streamy.id(), data: {direction:'right', x: this.x, y:this.y} });
       this.body.velocity.y = -250;
     }
 
     if (this.jumpButton.isDown && (this.body.onFloor() || this.body.touching.down)) {
-      console.log("jump?")
+      //Streamy.emit('clientMove', { id: Streamy.id(), data: {direction:'right', x: this.x, y:this.y} });
       this.body.velocity.y = -400;
+    }
+
+    if(this.body.velocity.x || this.body.velocity.y ){
+    Streamy.emit('clientMove', { id: Streamy.id(), data: {direction:'right', x: this.x, y:this.y} });
     }
   }
 

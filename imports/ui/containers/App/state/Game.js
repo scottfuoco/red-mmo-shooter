@@ -6,105 +6,106 @@ export default class extends Phaser.State {
 
   }
   preload() {
-
     this.load.image('bullet', 'img/bullet.png');
-
   }
 
   create() {
     this.physics.startSystem(Phaser.Physics.ARCADE);
 
+    // generate random starting x posiiton based on world width
+    const x = Math.floor(Math.random() * this.world.width);
+    const y = 50;
+
+    // create player with starting position
     this.player = new Player({
       game: this,
-      x: this.world.centerX,
-      y: this.world.centerY,
+      x,
+      y,
       asset: 'player',
     });
 
-    this.dj = new DJ({
-      game: this,
-      x: this.world.width - 80,
-      y: this.world.height - 50,
-      asset: 'dj',
-    })
+
+    // send server players coordinates to broadcast to all other clients
+    Streamy.emit('newChallenger', { id: Streamy.id(), player: { x, y } });
 
     this.platforms = this.game.add.physicsGroup();
     this.platforms.create(50, 150, 'platform');
-    // this.platforms.create(200, 300, 'platform');
-    // this.platforms.create(400, 350, 'platform');
     this.platforms.setAll('body.immovable', true)
 
+    // Group of DJ
+    // this.djs = this.add.group();
+    // this.djs.enableBody = true;
+    // this.djs.setAll('anchor.x', .5);
+    // this.djs.setAll('anchor.y', 0.5);
+    // this.djs.setAll('outOfBoundsKill', true);
+    // this.djs.setAll('checkWorldBounds', true);
 
+    this.djObjects = {};
 
-    this.game.physics.arcade.enable(this.player);
-    this.player.body.collideWorldBounds = true;
+    Streamy.on('createChallenger', d => {
+      this.djObjects[d.challenger.id] = this.game.add.existing(new DJ({ game: this, x: d.challenger.player.x, y: d.challenger.player.y, asset: 'dj' }));
+      this.physics.arcade.enable(this.djObjects[d.challenger.id]);
+      Streamy.emit('createChallengerResponse', { newChallengerId: d.challenger.id, id: Streamy.id(), player: { x: this.player.x, y: this.player.y } });
+    });
 
+    Streamy.on('requestChallengers', d => {
+      console.log('request Challenger');
+      this.djObjects[d.challenger.id] = this.game.add.existing(new DJ({ game: this, x: d.challenger.player.x, y: d.challenger.player.y, asset: 'dj' }));
+      this.physics.arcade.enable(this.djObjects[d.challenger.id]);
+    });
 
-    this.djs = this.add.group();
-    this.djs.enableBody = true;
-    this.djs.createMultiple(10, 'dj');
-    this.djs.setAll('anchor.x', .5);
-    this.djs.setAll('anchor.y', 0.5);
-    this.djs.setAll('outOfBoundsKill', true);
-    this.djs.setAll('checkWorldBounds', true);
-
-
-
-    // single DJ
-    this.dj.physicsBodyType = Phaser.Physics.ARCADE;
 
     this.firingTimer = 0;
     this.bulletTime = 0;
 
     this.bullets = this.add.group();
     this.bullets.enableBody = true;
-    this.bullets.createMultiple(10, 'bullet');
+    this.bullets.createMultiple(5, 'bullet');
     this.bullets.setAll('anchor.x', .5);
-    this.bullets.setAll('anchor.y', 0.5);
+    this.bullets.setAll('anchor.y', .5);
     this.bullets.setAll('outOfBoundsKill', true);
     this.bullets.setAll('checkWorldBounds', true);
 
 
     // set physics on below entities and groups
-    this.physics.arcade.enable([this.bullets, this.djs, this.dj, this.platforms]);
-
+    this.physics.arcade.enable([this.bullets, this.player, this.platforms]);
+    this.player.body.collideWorldBounds = true;
 
     this.fireButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
-    this.game.add.existing(this.dj);
     this.game.add.existing(this.player);
     this.spawnDJ = false;
     this.spawnDJLocation = {};
 
 
-    Streamy.on('movement', function (d, s) {
-      console.log(`from server ${d.data}`)
-    });
-
     Streamy.on('spawnDJ', (d, s) => {
-      console.log('hi');
       this.spawnDJ = true;
       this.spawnDJLocation = { x: d.data.x, y: d.data.y };
-
-      console.log(this.spawnDJLocation.x);
     });
+
+    Streamy.on('killDJ', (d, s) => {
+      console.log(this.djObjects[d.data.id]);
+    });
+
 
     music = this.game.add.audio('backgroundMusic');
     bulletFire = this.game.add.audio('bulletFire');
     music.loop = true;
-    music.play();
+    //music.play();
 
   }
-  update() {
-    if (this.spawnDJ) {
-      dj = this.djs.getFirstExists(false);
-      this.spawnDJ = false;
 
-      if (dj) {
-        //  And fire it
-        dj.reset(this.spawnDJLocation.x, this.spawnDJLocation.y);
-      }
-    }
+  update() {
+
+    // if (this.spawnDJ) {
+    //   dj = this.djs.getFirstExists(false);
+    //   this.spawnDJ = false;
+
+    //   if (dj) {
+    //     //  And fire it
+    //     dj.reset(this.spawnDJLocation.x, this.spawnDJLocation.y);
+    //   }
+    // }
 
     this.game.physics.arcade.collide(this.player, this.platforms);
 
@@ -112,11 +113,22 @@ export default class extends Phaser.State {
     if (this.fireButton.isDown) {
       this.fireBullet();
     }
-    this.physics.arcade.collide(this.bullets, this.dj, this.collisionHandler, null, this);
-    this.physics.arcade.collide(this.bullets, this.platforms, this.collisionHandler2, null, this);
+
+    this.physics.arcade.collide(this.bullets, this.djs, this.collisionHandler, null, this);
+    this.physics.arcade.collide(this.bullets, this.platforms, this.collisionHandlerBulletPlatform, null, this);
+
+    for (dj in this.djObjects) {
+      if (this.physics.arcade.collide(this.bullets, this.djObjects[dj], this.collisionHandler2, this.collisionProccessor, this)) {
+        Streamy.emit('DJDie', { id: Streamy.id(), data: { player: { x: this.djObjects[dj].x, y:this.djObjects[dj].y} }, id: dj });
+
+      }
+    }
     //this.physics.arcade.overlap(this.bullets, this.DJ, this.collisionHandler, null, this);
   }
 
+  collisionProccessor() {
+    return true;
+  }
   fireBullet() {
 
     //  To avoid them being allowed to fire too fast we set a time limit
@@ -134,12 +146,18 @@ export default class extends Phaser.State {
     }
   }
   resetBullet(bullet) {
-
     //  Called if the bullet goes out of the screen
     bullet.kill();
 
   }
-  collisionHandler2(bullet, platform) {
+  collisionHandler2(bullet, DJ) {
+    //  When a bullet hits an alien we kill them both
+    DJ.kill();
+    bullet.kill();
+  }
+
+
+  collisionHandlerBulletPlatform(bullet, platform) {
     //  When a bullet hits an alien we kill them both
     bullet.kill();
   }

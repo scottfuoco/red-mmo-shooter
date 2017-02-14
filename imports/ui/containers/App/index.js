@@ -36,7 +36,6 @@ class App extends Component {
     return (
       <div>
         <div id="game">
-
         </div>
         <div className="login-wrapper">
           <AccountsUIWrapper />
