@@ -90,7 +90,7 @@ export default class extends Phaser.State {
       this.fireBullet(this.player.facing);
     }
 
-    this.physics.arcade.collide(this.bullets, this.djs, this.collisionHandler, null, this);
+
     this.physics.arcade.collide(this.bullets, this.platforms, this.collisionHandlerBulletPlatform, null, this);
 
     for (dj in this.djObjects) {
