@@ -28,6 +28,11 @@ export default class extends Phaser.State {
     // send server players coordinates to broadcast to all other clients
     Streamy.emit('newChallenger', { id: Streamy.id(), player: { x, y } });
 
+    Streamy.on('movement', d => {
+      this.djObjects[d.data.id].x = d.data.x;
+      this.djObjects[d.data.id].y = d.data.y;
+    });
+
     this.platforms = this.game.add.physicsGroup();
     this.platforms.create(50, 150, 'platform');
     this.platforms.setAll('body.immovable', true)
@@ -75,7 +80,11 @@ export default class extends Phaser.State {
     });
 
     Streamy.on('killDJ', (d, s) => {
-      console.log(this.djObjects[d.data.id]);
+      if (d.data.id === Streamy.id()) {
+        this.player.kill();
+        return;
+      }
+      this.djObjects[d.data.id].kill();
     });
 
 
@@ -87,26 +96,24 @@ export default class extends Phaser.State {
   }
 
   update() {
-
     this.game.physics.arcade.collide(this.player, this.platforms);
 
     //  Firing?
-    if (this.fireButton.isDown) {
+    if (this.fireButton.isDown && this.player.visible) {
       this.fireBullet(this.player.facing);
     }
-
 
     this.physics.arcade.collide(this.bullets, this.platforms, this.collisionHandlerBulletPlatform, null, this);
 
     for (dj in this.djObjects) {
-      if (this.physics.arcade.collide(this.bullets, this.djObjects[dj], this.collisionHandler2, this.collisionProccessor, this)) {
-        Streamy.emit('DJDie', { id: Streamy.id(), data: { player: { x: this.djObjects[dj].x, y: this.djObjects[dj].y } }, id: dj });
+      if (this.physics.arcade.collide(this.bullets, this.djObjects[dj], this.collisionHandlerBulletDJ, this.collisionProccessorBulletDJ, this)) {
+        Streamy.emit('DJDie', { data: { id: dj }, myID: Streamy.id() });
       }
     }
   }
 
 
-  collisionProccessor() {
+  collisionProccessorBulletDJ() {
     return true;
   }
 
@@ -140,7 +147,8 @@ export default class extends Phaser.State {
     bullet.kill();
 
   }
-  collisionHandler2(bullet, DJ) {
+  collisionHandlerBulletDJ(bullet, DJ) {
+
     //  When a bullet hits an alien DJ we kill them both
     DJ.kill();
     bullet.kill();
@@ -152,13 +160,6 @@ export default class extends Phaser.State {
     bullet.kill();
   }
 
-  collisionHandler(bullet, DJ) {
-    //  When a bullet hits an DJ we kill them both
-    Streamy.emit('DJDie', { data: { x: this.player.x, y: this.player.y } });
-
-    bullet.kill();
-    DJ.kill();
-  }
   render() {
     // this.game.debug.body(this.dj);
     // this.game.debug.body(this.bullets);
