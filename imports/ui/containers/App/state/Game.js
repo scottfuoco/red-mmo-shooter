@@ -1,7 +1,7 @@
 import Phaser from '/imports/startup/phaser-split.js';
 import Player from './../sprite/Player';
 import DJ from './../sprite/DJ';
-// import bullet from 
+// import { fireButton } from './../methods/bullet.js';
 export default class extends Phaser.State {
   init() {
 
@@ -22,7 +22,7 @@ export default class extends Phaser.State {
       asset: 'player',
     });
 
-    this.dj = new DJ({
+    this.dj["djd"] = new DJ({
       game: this,
       x: this.world.width - 80,
       y: this.world.height - 50,
@@ -71,7 +71,7 @@ export default class extends Phaser.State {
 
 
     this.fireButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-
+    
     this.game.add.existing(this.dj);
     this.game.add.existing(this.player);
     this.spawnDJ = false;
@@ -119,25 +119,25 @@ export default class extends Phaser.State {
   }
 
   fireBullet(facing) {
-    
+
     //  To avoid them being allowed to fire too fast we set a time limit
     if (this.game.time.now > this.bulletTime) {
       //  Grab the first bullet we can from the pool
       bullet = this.bullets.getFirstExists(false);
-      
+
       bulletFire.play()
       if (bullet) {
         //  And fire it
         bullet.reset(this.player.x, this.player.y + 8);
-        if (facing === 'left'){
+        if (facing === 'left') {
           bullet.angle = -180;
           bullet.body.velocity.x = -400;
-          Streamy.emit('bulletFire', { bulletx: this.player.x, bullety: this.player.y});
+          Streamy.emit('bulletFire', { bulletx: this.player.x, bullety: this.player.y });
         }
-        if (facing === 'right'){
+        if (facing === 'right') {
           bullet.angle = 0;
           bullet.body.velocity.x = 400;
-          Streamy.emit('bulletFire', { bulletx: this.player.x, bullety: this.player.y});
+          Streamy.emit('bulletFire', { bulletx: this.player.x, bullety: this.player.y });
         }
 
 
