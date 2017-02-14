@@ -39,7 +39,9 @@ export default class extends Phaser.State {
     });
 
     this.platforms = this.game.add.physicsGroup();
-    this.platforms.create(50, 150, 'platform');
+    this.platforms.create(50, 450, 'platform');
+    this.platforms.create(500, 350, 'platform');
+    this.platforms.create(100, 690, 'platform');
     this.platforms.setAll('body.immovable', true)
 
     this.djObjects = {};
@@ -103,12 +105,17 @@ export default class extends Phaser.State {
     }
 
     this.physics.arcade.collide(this.bullets, this.platforms, this.collisionHandlerBulletPlatform, null, this);
+     this.physics.arcade.collide(this.DJbullets, this.platforms, this.collisionHandlerDJBulletPlatform, null, this);
 
     for (dj in this.djObjects) {
       if (this.physics.arcade.collide(this.bullets, this.djObjects[dj], this.collisionHandlerBulletDJ, this.collisionProccessorBulletDJ, this)) {
         Streamy.emit('DJDie', { data: { id: dj }, myID: Streamy.id() });
       }
     }
+  }
+   collisionHandlerDJBulletDJ(bullet, DJ) {
+    //  When a bullet hits an alien DJ we kill them both
+    bullet.kill();
   }
 
 
@@ -174,12 +181,16 @@ export default class extends Phaser.State {
     //  When a bullet hits an alien DJ we kill them both
     bullet.kill();
   }
+   collisionHandlerDJBulletPlatform(bullet, platform) {
+    //  When a bullet hits an alien DJ we kill them both
+    bullet.kill();
+  }
 
   createBulletSettings() {
     // MY BULLETS
     this.bullets = this.add.group();
     this.bullets.enableBody = true;
-    this.bullets.createMultiple(3, 'bullet');
+    this.bullets.createMultiple(5, 'bullet');
     this.bullets.setAll('anchor.x', .5);
     this.bullets.setAll('anchor.y', .5);
     this.bullets.setAll('outOfBoundsKill', true);
