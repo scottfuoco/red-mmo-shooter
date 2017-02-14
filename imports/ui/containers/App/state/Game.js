@@ -11,6 +11,8 @@ export default class extends Phaser.State {
   }
 
   create() {
+
+    this.stage.disableVisibilityChange = true;
     this.physics.startSystem(Phaser.Physics.ARCADE);
 
     // this.bullets = bulletFactory.create(this);
@@ -48,7 +50,9 @@ export default class extends Phaser.State {
       this.djObjects[d.challenger.id] = this.game.add.existing(new DJ({ game: this, x: d.challenger.player.x, y: d.challenger.player.y, asset: 'dj' }));
       this.physics.arcade.enable(this.djObjects[d.challenger.id]);
     });
-
+    Streamy.on('spawnBullet',d =>{
+      this.fireEvilBullet(d.data);
+    } )
     this.firingTimer = 0;
     this.bulletTime = 0;
     this.createBulletSettings()
@@ -117,18 +121,34 @@ export default class extends Phaser.State {
         if (facing === 'left') {
           bullet.angle = -180;
           bullet.body.velocity.x = -400;
-          Streamy.emit('bulletFire', { bulletx: this.player.x, bullety: this.player.y });
         }
         if (facing === 'right') {
           bullet.angle = 0;
           bullet.body.velocity.x = 400;
-          Streamy.emit('bulletFire', { bulletx: this.player.x, bullety: this.player.y });
         }
-
+        Streamy.emit('bulletFire', {data:{bulletx: this.player.x, bullety: this.player.y, facing }, id:Streamy.id() });
 
         this.bulletTime = this.game.time.now + 200;
       }
     }
+  }
+
+  //Cast Evil bullet flying
+  fireEvilBullet({x, y, facing}) {
+      bullet = this.DJbullets.getFirstExists(false);
+      bulletFire.play()
+      if (bullet) {
+        //  And fire it
+        bullet.reset(x, y + 8);
+        if (facing === 'left') {
+          bullet.angle = -180;
+          bullet.body.velocity.x = -400;
+        }
+        if (facing === 'right') {
+          bullet.angle = 0;
+          bullet.body.velocity.x = 400;
+        }
+      }
   }
   resetBullet(bullet) {
     //  Called if the bullet goes out of the screen
@@ -156,13 +176,23 @@ export default class extends Phaser.State {
     DJ.kill();
   }
   createBulletSettings() {
+    // MY BULLETS
     this.bullets = this.add.group();
     this.bullets.enableBody = true;
-    this.bullets.createMultiple(5, 'bullet');
+    this.bullets.createMultiple(3, 'bullet');
     this.bullets.setAll('anchor.x', .5);
     this.bullets.setAll('anchor.y', .5);
     this.bullets.setAll('outOfBoundsKill', true);
     this.bullets.setAll('checkWorldBounds', true);
+
+    // EVIL BULLETS
+    this.DJbullets = this.add.group();
+    this.DJbullets.enableBody = true;
+    this.DJbullets.createMultiple(500, 'bullet');
+    this.DJbullets.setAll('anchor.x', .5);
+    this.DJbullets.setAll('anchor.y', .5);
+    this.DJbullets.setAll('outOfBoundsKill', true);
+    this.DJbullets.setAll('checkWorldBounds', true);
   }
   render() {
     // this.game.debug.body(this.dj);
