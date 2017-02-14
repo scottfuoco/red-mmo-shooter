@@ -18,6 +18,7 @@ Meteor.startup(() => {
   Streamy.on('createChallengerResponse', function(d, s) {
     Streamy.emit('requestChallengers', { challenger: { id: d.id, player: {x: d.player.x, y:d.player.y } } }, Streamy.sockets(d.newChallengerId))
   })
+  
   Streamy.on('bulletFire', (d , s)=>{
     // Streamy.broadcast('spawnDJ', { data: { x:d.bulletx, y:d.bullety } })
   })
