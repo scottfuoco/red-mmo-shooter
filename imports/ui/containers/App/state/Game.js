@@ -32,14 +32,6 @@ export default class extends Phaser.State {
     this.platforms.create(50, 150, 'platform');
     this.platforms.setAll('body.immovable', true)
 
-    // Group of DJ
-    // this.djs = this.add.group();
-    // this.djs.enableBody = true;
-    // this.djs.setAll('anchor.x', .5);
-    // this.djs.setAll('anchor.y', 0.5);
-    // this.djs.setAll('outOfBoundsKill', true);
-    // this.djs.setAll('checkWorldBounds', true);
-
     this.djObjects = {};
 
     Streamy.on('createChallenger', d => {
@@ -53,7 +45,6 @@ export default class extends Phaser.State {
       this.djObjects[d.challenger.id] = this.game.add.existing(new DJ({ game: this, x: d.challenger.player.x, y: d.challenger.player.y, asset: 'dj' }));
       this.physics.arcade.enable(this.djObjects[d.challenger.id]);
     });
-
 
     this.firingTimer = 0;
     this.bulletTime = 0;
@@ -97,16 +88,6 @@ export default class extends Phaser.State {
 
   update() {
 
-    // if (this.spawnDJ) {
-    //   dj = this.djs.getFirstExists(false);
-    //   this.spawnDJ = false;
-
-    //   if (dj) {
-    //     //  And fire it
-    //     dj.reset(this.spawnDJLocation.x, this.spawnDJLocation.y);
-    //   }
-    // }
-
     this.game.physics.arcade.collide(this.player, this.platforms);
 
     //  Firing?
@@ -119,10 +100,9 @@ export default class extends Phaser.State {
 
     for (dj in this.djObjects) {
       if (this.physics.arcade.collide(this.bullets, this.djObjects[dj], this.collisionHandler2, this.collisionProccessor, this)) {
-        Streamy.emit('DJDie', { id: Streamy.id(), data: { player: { x: this.djObjects[dj].x, y:this.djObjects[dj].y} }, id: dj });
+        Streamy.emit('DJDie', { id: Streamy.id(), data: { player: { x: this.djObjects[dj].x, y: this.djObjects[dj].y } }, id: dj });
       }
     }
-    //this.physics.arcade.overlap(this.bullets, this.DJ, this.collisionHandler, null, this);
   }
 
 
@@ -135,7 +115,6 @@ export default class extends Phaser.State {
     if (this.game.time.now > this.bulletTime) {
       //  Grab the first bullet we can from the pool
       bullet = this.bullets.getFirstExists(false);
-
       bulletFire.play()
       if (bullet) {
         //  And fire it
@@ -162,19 +141,19 @@ export default class extends Phaser.State {
 
   }
   collisionHandler2(bullet, DJ) {
-    //  When a bullet hits an alien we kill them both
+    //  When a bullet hits an alien DJ we kill them both
     DJ.kill();
     bullet.kill();
   }
 
 
   collisionHandlerBulletPlatform(bullet, platform) {
-    //  When a bullet hits an alien we kill them both
+    //  When a bullet hits an alien DJ we kill them both
     bullet.kill();
   }
 
   collisionHandler(bullet, DJ) {
-    //  When a bullet hits an alien we kill them both
+    //  When a bullet hits an DJ we kill them both
     Streamy.emit('DJDie', { data: { x: this.player.x, y: this.player.y } });
 
     bullet.kill();
