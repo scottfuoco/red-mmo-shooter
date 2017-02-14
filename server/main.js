@@ -11,15 +11,15 @@ Meteor.startup(() => {
     Streamy.broadcast('killDJ', { data: { player: { x:d.data.x, y:d.data.y } }, id: d.data.id}, d.id)
   })
 
-  Streamy.on('newChallenger', function(d, s) {
+  Streamy.on('newChallenger', (d, s) => {
     Streamy.broadcast('createChallenger', { challenger: { id: d.id, player: {x: d.player.x, y:d.player.y } } }, d.id );
   })
 
-  Streamy.on('createChallengerResponse', function(d, s) {
+  Streamy.on('createChallengerResponse', (d, s) => {
     Streamy.emit('requestChallengers', { challenger: { id: d.id, player: {x: d.player.x, y:d.player.y } } }, Streamy.sockets(d.newChallengerId))
   })
-  
-  Streamy.on('bulletFire', (d , s)=>{
+
+  Streamy.on('bulletFire', (d , s) => {
     // Streamy.broadcast('spawnDJ', { data: { x:d.bulletx, y:d.bullety } })
   })
 
