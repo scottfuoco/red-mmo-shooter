@@ -13,6 +13,8 @@ export default class extends Phaser.State {
   create() {
     this.physics.startSystem(Phaser.Physics.ARCADE);
 
+    // this.bullets = bulletFactory.create(this);
+
     // generate random starting x posiiton based on world width
     const x = Math.floor(Math.random() * this.world.width);
     const y = 50;
@@ -24,6 +26,7 @@ export default class extends Phaser.State {
       y,
       asset: 'player',
     });
+    // create bullets with player position?
 
     // send server players coordinates to broadcast to all other clients
     Streamy.emit('newChallenger', { id: Streamy.id(), player: { x, y } });
@@ -53,23 +56,15 @@ export default class extends Phaser.State {
 
     this.firingTimer = 0;
     this.bulletTime = 0;
-
-    this.bullets = this.add.group();
-    this.bullets.enableBody = true;
-    this.bullets.createMultiple(3, 'bullet');
-    this.bullets.setAll('anchor.x', .5);
-    this.bullets.setAll('anchor.y', .5);
-    this.bullets.setAll('outOfBoundsKill', true);
-    this.bullets.setAll('checkWorldBounds', true);
-
+    this.createBulletSettings()
 
     // set physics on below entities and groups
     this.physics.arcade.enable([this.bullets, this.player, this.platforms]);
     this.player.body.collideWorldBounds = true;
-
     this.fireButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
     this.game.add.existing(this.player);
+    this.game.add.existing(this.bullets.getFirstExists(false));
     this.spawnDJ = false;
     this.spawnDJLocation = {};
 
@@ -147,8 +142,8 @@ export default class extends Phaser.State {
     bullet.kill();
 
   }
-  collisionHandlerBulletDJ(bullet, DJ) {
 
+  collisionHandlerBulletDJ(bullet, DJ) {
     //  When a bullet hits an alien DJ we kill them both
     DJ.kill();
     bullet.kill();
@@ -160,9 +155,20 @@ export default class extends Phaser.State {
     bullet.kill();
   }
 
+  createBulletSettings() {
+    this.bullets = this.add.group();
+    this.bullets.enableBody = true;
+    this.bullets.createMultiple(5, 'bullet');
+    this.bullets.setAll('anchor.x', .5);
+    this.bullets.setAll('anchor.y', .5);
+    this.bullets.setAll('outOfBoundsKill', true);
+    this.bullets.setAll('checkWorldBounds', true);
+  }
+  
   render() {
     // this.game.debug.body(this.dj);
     // this.game.debug.body(this.bullets);
     // this.game.debug.body(this.player);
   }
 }
+
