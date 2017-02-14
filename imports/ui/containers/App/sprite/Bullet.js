@@ -4,9 +4,14 @@ export default class extends Phaser.Sprite {
 
   constructor({ game, x, y, asset }) {
     super(game, x, y, asset)
-    // this.fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     this.anchor.setTo(0.5)
-        Streamy.on('movement', d => {
+
+    this.enableBody = true;
+    this.createMultiple(5, 'bullet');
+    this.set('outOfBoundsKill', true);
+    this.set('checkWorldBounds', true);
+    
+    Streamy.on('movement', d => {
       this.x = d.data.x;
       this.y = d.data.y;
     });
@@ -18,4 +23,5 @@ export default class extends Phaser.Sprite {
   update() {
     this.body.velocity.x = 0;
   }
+
 }
