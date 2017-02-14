@@ -1,6 +1,7 @@
 import Phaser from '/imports/startup/phaser-split.js';
 import Player from './../sprite/Player';
 import DJ from './../sprite/DJ';
+// import { fireButton } from './../methods/bullet.js';
 export default class extends Phaser.State {
   init() {
 
@@ -23,7 +24,6 @@ export default class extends Phaser.State {
       y,
       asset: 'player',
     });
-
 
     // send server players coordinates to broadcast to all other clients
     Streamy.emit('newChallenger', { id: Streamy.id(), player: { x, y } });
@@ -111,7 +111,7 @@ export default class extends Phaser.State {
 
     //  Firing?
     if (this.fireButton.isDown) {
-      this.fireBullet();
+      this.fireBullet(this.player.facing);
     }
 
     this.physics.arcade.collide(this.bullets, this.djs, this.collisionHandler, null, this);
@@ -120,17 +120,17 @@ export default class extends Phaser.State {
     for (dj in this.djObjects) {
       if (this.physics.arcade.collide(this.bullets, this.djObjects[dj], this.collisionHandler2, this.collisionProccessor, this)) {
         Streamy.emit('DJDie', { id: Streamy.id(), data: { player: { x: this.djObjects[dj].x, y:this.djObjects[dj].y} }, id: dj });
-
       }
     }
     //this.physics.arcade.overlap(this.bullets, this.DJ, this.collisionHandler, null, this);
   }
 
+
   collisionProccessor() {
     return true;
   }
-  fireBullet() {
 
+  fireBullet(facing) {
     //  To avoid them being allowed to fire too fast we set a time limit
     if (this.game.time.now > this.bulletTime) {
       //  Grab the first bullet we can from the pool
@@ -140,7 +140,18 @@ export default class extends Phaser.State {
       if (bullet) {
         //  And fire it
         bullet.reset(this.player.x, this.player.y + 8);
-        bullet.body.velocity.x = 400;
+        if (facing === 'left') {
+          bullet.angle = -180;
+          bullet.body.velocity.x = -400;
+          Streamy.emit('bulletFire', { bulletx: this.player.x, bullety: this.player.y });
+        }
+        if (facing === 'right') {
+          bullet.angle = 0;
+          bullet.body.velocity.x = 400;
+          Streamy.emit('bulletFire', { bulletx: this.player.x, bullety: this.player.y });
+        }
+
+
         this.bulletTime = this.game.time.now + 200;
       }
     }
