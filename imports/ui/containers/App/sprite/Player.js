@@ -28,7 +28,6 @@ export default class extends Phaser.Sprite {
     }
 
     if (this.jumpButton.isDown && (this.body.onFloor() || this.body.touching.down)) {
-      //Streamy.emit('clientMove', { id: Streamy.id(), data: {direction:'right', x: this.x, y:this.y} });
       this.body.velocity.y = -400;
     }
 

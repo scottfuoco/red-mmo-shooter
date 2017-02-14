@@ -8,7 +8,7 @@ Meteor.startup(() => {
   });
 
   Streamy.on('DJDie', (d, s) => {
-    Streamy.broadcast('killDJ', { data: { player: { x:d.data.x, y:d.data.y } }, id: d.data.id}, d.id)
+    Streamy.broadcast('killDJ', { data: { id: d.data.id} }, d.myID)
   })
 
   Streamy.on('newChallenger', (d, s) => {
