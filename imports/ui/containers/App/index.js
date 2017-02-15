@@ -33,6 +33,7 @@ class App extends Component {
   }
 
   render() {
+    console.log(Meteor.userId())
     return (
       <div >
         <div className="login-wrapper">
