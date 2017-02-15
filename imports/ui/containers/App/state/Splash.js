@@ -15,13 +15,17 @@ export default class extends Phaser.State {
   create() {
 
     this.goToGame = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-    let text = this.add.text(this.world.centerX-500, this.world.centerY-200, 'Welcome to play game, press space and play for fun.', { font: '35px Arial', fill: '#000', align: 'center' })
+    let text = this.add.text(this.world.centerX - 500, this.world.centerY - 200, 'Welcome to play game, press space and play for fun.', { font: '35px Arial', fill: '#000', align: 'center' })
 
   }
 
   update() {
-    if (this.goToGame.isDown) {
-      this.state.start('Game');
+    if (Meteor.userId()) {
+      if (this.goToGame.isDown) {
+        this.state.start('Game');
+      }
+    } else {
+      let text2 = this.add.text(this.world.centerX-500, this.world.centerY, 'Log the fuck in', { font: '35px Arial', fill: '#000', align: 'center' })
     }
   }
 }
