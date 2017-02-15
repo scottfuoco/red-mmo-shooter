@@ -30,16 +30,23 @@ class App extends Component {
   constructor() {
     super()
     this.game = new Game()
+    
   }
 
   render() {
     return (
       <div>
-        <div id="game">
-        </div>
-        <div className="login-wrapper">
-          <AccountsUIWrapper />
-        </div>
+      <div className="login-wrapper">
+            <AccountsUIWrapper />
+          </div>
+        {currentUser ?
+          <div id="game">
+          </div>
+          :
+          <div className="logged-out-message">
+              <p> Please sign in to see your todos. </p>
+            </div>
+        }
       </div>
     );
 
