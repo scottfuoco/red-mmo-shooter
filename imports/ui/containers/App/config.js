@@ -1,5 +1,5 @@
 export default {
-  gameWidth: 1200,
-  gameHeight: 1080,
+  gameWidth: 1280,
+  gameHeight: 720,
   localStorageName: 'game'
 }
