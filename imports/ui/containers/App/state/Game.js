@@ -181,10 +181,10 @@ respawnPlayer(){
 
   }
 
-  collisionHandlerBulletDJ(bullet, DJ) {
+  collisionHandlerBulletDJ(DJ, bullet) {
     //  When a bullet hits an alien DJ we kill them both
     DJ.kill();
-    bullet.kill();
+    // bullet.kill();
   }
 
 

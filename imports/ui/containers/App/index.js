@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { createContainer } from 'meteor/react-meteor-data';
 import Phaser from '/imports/startup/phaser-split.js';
 import AccountsUIWrapper from './../../components/AccountsUiWrapper'
 
@@ -27,27 +28,34 @@ class Game extends Phaser.Game {
 
 
 class App extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.game = new Game()
   }
 
   render() {
-    console.log(Meteor.userId())
     return (
       <div >
         <div className="login-wrapper">
           <AccountsUIWrapper />
         </div>
-        <div id="game" style={{ display: Meteor.userId() ? 'block' : 'none' }}>
+        <div id="game" style={{ display: (this.props.currentUserId ? 'block' : 'none') }}>
         </div>
-        <div className="logged-out-message">
-          <p  style={{ color: 'white' }}> Please sign in to see your todos. </p>
-        </div>
+        {this.props.currentUserId ?
+          <div></div>
+          :
+          <div className="logged-out-message">
+            <p style={{ color: 'white' }}> Please sign in to start playing. </p>
+          </div>
+        }
       </div>
     );
 
   }
 }
 
-export default App;
+export default createContainer(() => {
+  return {
+    currentUserId: Meteor.userId(),
+  };
+}, App);
