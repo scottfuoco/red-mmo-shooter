@@ -134,7 +134,6 @@ respawnPlayer(){
   collisionProccessorBulletDJ() {
     return true;
   }
-
   fireBullet(facing) {
     //  To avoid them being allowed to fire too fast we set a time limit
     if (this.game.time.now > this.bulletTime) {
