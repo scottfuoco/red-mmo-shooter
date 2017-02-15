@@ -210,7 +210,7 @@ respawnPlayer(){
     // EVIL BULLETS
     this.DJbullets = this.add.group();
     this.DJbullets.enableBody = true;
-    this.DJbullets.createMultiple(500, 'bullet');
+    this.DJbullets.createMultiple(500, 'djbullet');
     this.DJbullets.setAll('anchor.x', .5);
     this.DJbullets.setAll('anchor.y', .5);
     this.DJbullets.setAll('outOfBoundsKill', true);
