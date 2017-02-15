@@ -37,9 +37,9 @@ export default class extends Phaser.State {
     });
 
     this.platforms = this.game.add.physicsGroup();
-    this.platforms.create(50, 450, 'platform');
-    this.platforms.create(500, 350, 'platform');
-    this.platforms.create(100, 690, 'platform');
+    this.platforms.create(600, 550, 'platform');
+    this.platforms.create(-50, 350, 'platform');
+    this.platforms.create(1000, 200, 'platform');
     this.platforms.setAll('body.immovable', true)
 
     this.djObjects = {};
