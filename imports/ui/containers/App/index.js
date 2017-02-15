@@ -34,11 +34,14 @@ class App extends Component {
 
   render() {
     return (
-      <div>
-        <div id="game">
-        </div>
+      <div >
         <div className="login-wrapper">
           <AccountsUIWrapper />
+        </div>
+        <div id="game" style={{ display: Meteor.userId() ? 'block' : 'none' }}>
+        </div>
+        <div className="logged-out-message">
+          <p  style={{ color: 'white' }}> Please sign in to see your todos. </p>
         </div>
       </div>
     );
