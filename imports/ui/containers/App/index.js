@@ -30,23 +30,19 @@ class App extends Component {
   constructor() {
     super()
     this.game = new Game()
-    
   }
 
   render() {
     return (
-      <div>
-      <div className="login-wrapper">
-            <AccountsUIWrapper />
-          </div>
-        {currentUser ?
-          <div id="game">
-          </div>
-          :
-          <div className="logged-out-message">
-              <p> Please sign in to see your todos. </p>
-            </div>
-        }
+      <div >
+        <div className="login-wrapper">
+          <AccountsUIWrapper />
+        </div>
+        <div id="game" style={{ display: Meteor.userId() ? 'block' : 'none' }}>
+        </div>
+        <div className="logged-out-message">
+          <p  style={{ color: 'white' }}> Please sign in to see your todos. </p>
+        </div>
       </div>
     );
 
