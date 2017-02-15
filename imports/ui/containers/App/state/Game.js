@@ -19,7 +19,7 @@ export default class extends Phaser.State {
 
     // generate random starting x posiiton based on world width
     const x = Math.floor(Math.random() * this.world.width);
-    const y = 50;
+    const y =  Math.floor(Math.random() * this.world.height);
 
     // create player with starting position
     this.player = new Player({
@@ -28,8 +28,6 @@ export default class extends Phaser.State {
       y,
       asset: 'player',
     });
-    // create bullets with player position?
-
     // send server players coordinates to broadcast to all other clients
     Streamy.emit('newChallenger', { id: Streamy.id(), player: { x, y } });
 
@@ -60,6 +58,9 @@ export default class extends Phaser.State {
     Streamy.on('spawnBullet',d =>{
       this.fireEvilBullet(d.data);
     } )
+    Streamy.on( 'respawnHim', d =>{
+      this.djObjects[d.data.id].reset( d.data.x, d.data.y )
+    })
     this.firingTimer = 0;
     this.bulletTime = 0;
     this.createBulletSettings()
@@ -68,6 +69,7 @@ export default class extends Phaser.State {
     this.physics.arcade.enable([this.bullets, this.player, this.platforms]);
     this.player.body.collideWorldBounds = true;
     this.fireButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    this.respawnkey = this.input.keyboard.addKey(Phaser.Keyboard.R);
 
     this.game.add.existing(this.player);
     this.game.add.existing(this.bullets.getFirstExists(false));
@@ -82,7 +84,9 @@ export default class extends Phaser.State {
 
     Streamy.on('killDJ', (d, s) => {
       if (d.data.id === Streamy.id()) {
+        console.log(this.player)
         this.player.kill();
+        console.log(this.player)
         return;
       }
       this.djObjects[d.data.id].kill();
@@ -103,6 +107,9 @@ export default class extends Phaser.State {
     if (this.fireButton.isDown && this.player.visible) {
       this.fireBullet(this.player.facing);
     }
+    if (this.respawnkey.isDown & !this.player.visible){
+      this.respawnPlayer()
+    }
 
     this.physics.arcade.collide(this.bullets, this.platforms, this.collisionHandlerBulletPlatform, null, this);
      this.physics.arcade.collide(this.DJbullets, this.platforms, this.collisionHandlerDJBulletPlatform, null, this);
@@ -118,7 +125,12 @@ export default class extends Phaser.State {
     bullet.kill();
   }
 
-
+respawnPlayer(){
+  const newX = Math.floor(Math.random() * this.world.width);
+  const newY =  Math.floor(Math.random() * this.world.height);
+  this.player.reset(newX, newY)
+  Streamy.emit('respawnMe', { data: { x: newX, y: newY }, id: Streamy.id() })
+}
   collisionProccessorBulletDJ() {
     return true;
   }

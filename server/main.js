@@ -22,6 +22,11 @@ Meteor.startup(() => {
     Streamy.broadcast('spawnBullet', { data: { x:d.data.bulletx, y:d.data.bullety, facing:d.data.facing } }, d.id)
   })
 
+  Streamy.on('respawnMe', (d , s) =>{
+    Streamy.broadcast('respawnHim', { data: { x:d.data.x, y:d.data.y, id:d.id
+    }}, d.id)
+  })
+
 });
 
 const connections = {};
