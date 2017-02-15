@@ -34,7 +34,6 @@ class App extends Component {
   }
 
   render() {
-    console.log(this.props.currentUserId);
     return (
       <div >
         <div className="login-wrapper">
