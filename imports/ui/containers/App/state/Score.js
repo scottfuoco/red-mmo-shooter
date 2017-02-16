@@ -5,20 +5,14 @@ export default class extends Phaser.State {
   init() { }
 
   preload() {
-    this.load.image('platform', 'img/platform.png');
-    this.load.image('player', 'img/mushroom3.png');
-    this.load.image('djbullet', 'img/djbulletimg.png')
-    this.load.image('dj', 'img/dj1.png');
-    this.load.audio('backgroundMusic', ['audio/backgroundMusic.mp3']);
-    this.load.audio('bulletFire', ['audio/bulletFire.mp3']);
-    this.load.image('splashScreenImg', 'img/splash-screen-img.png');
   }
 
   create() {
     this.goToGame = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-    this.goToHighscore = this.input.keyboard.addKey(Phaser.Keyboard.H);
+    this.goToSplash = this.input.keyboard.addKey(Phaser.Keyboard.H);
     const style = { font: "bold 32px Arial", fill: "#000", boundsAlignH: "cnter", boundsAlignV: "middle" };
-    const text = this.add.text(0, 0, 'Welcome to play game, press space and play for fun.', style)
+    const text = this.add.text(0, 0, `Your shit score is ${localStorage.getItem('myScore')}`, style)
+    // Make the score request one from the DB
     text.setTextBounds(0, 0, this.world.width, 100);
 
     const splashScreenImg = this.game.add.sprite(this.world.centerX, this.world.centerY-300, 'splashScreenImg');
@@ -40,8 +34,8 @@ export default class extends Phaser.State {
       if (this.goToGame.isDown) {
         this.state.start('Game');
       }
-      if (this.goToHighscore.isDown) {
-        this.state.start('Score');
+      if (this.goToSplash.isDown) {
+        this.state.start('Splash');
       }
 
     } else {

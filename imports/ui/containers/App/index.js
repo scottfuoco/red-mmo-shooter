@@ -5,6 +5,7 @@ import AccountsUIWrapper from './../../components/AccountsUiWrapper'
 
 import BootState from './state/Boot'
 import SplashState from './state/Splash'
+import ScoreState from './state/Score'
 import GameState from './state/Game'
 
 import config from './config'
@@ -19,7 +20,9 @@ class Game extends Phaser.Game {
     super(width, height, Phaser.AUTO, 'game', null);
     this.state.add('Boot', BootState, false);
     this.state.add('Splash', SplashState, false);
+    this.state.add('Score', ScoreState, false)
     this.state.add('Game', GameState, false);
+
 
 
     this.state.start('Boot');
