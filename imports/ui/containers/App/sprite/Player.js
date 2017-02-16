@@ -23,6 +23,8 @@ export default class extends Phaser.Sprite {
   }
 
   update() {
+    // console.log(this);
+    if(this.alive)console.log("I EXIST")
     this.body.velocity.x = 0;
     this.body.gravity.y = 900;
     if (this.cursors.left.isDown) {
@@ -37,7 +39,7 @@ export default class extends Phaser.Sprite {
       this.body.velocity.y = -650;
     }
 
-    if (this.cursors.down.isDown  && (this.body.onFloor() || this.body.touching.down)) {
+    if (this.cursors.down.isDown  && (!this.body.onFloor() || !this.body.touching.down)) {
       this.body.velocity.y = 1300;
     }
     if (this.jumpButton.isDown && (this.body.onFloor() || this.body.touching.down)) {
