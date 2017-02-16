@@ -8,8 +8,17 @@ export default class extends Phaser.Sprite {
     // this.fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     this.jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     this.anchor.setTo(0.5)
-
+    this.score = this.getScore()
     this.facing = "right"
+  }
+  increasePlayerScore() {
+    this.score++
+    localStorage.setItem('myScore', this.score);
+  }
+  getScore(){
+    const storage = localStorage.getItem('myScore');
+    if (storage) return storage
+    return 0
   }
 
   update() {
@@ -20,7 +29,7 @@ export default class extends Phaser.Sprite {
       this.body.velocity.x = -650;
     }
     if (this.cursors.right.isDown) {
-      this.facing = "right" 
+      this.facing = "right"
       this.body.velocity.x = 650;
     }
     if (this.cursors.up.isDown) {
@@ -34,8 +43,8 @@ export default class extends Phaser.Sprite {
       this.body.velocity.y = -550;
     }
 
-    if(this.body.velocity.x || this.body.velocity.y ){
-    Streamy.emit('clientMove', { id: Streamy.id(), data: {direction:this.facing, x: this.x, y:this.y} });
+    if (this.body.velocity.x || this.body.velocity.y) {
+      Streamy.emit('clientMove', { id: Streamy.id(), data: { direction: this.facing, x: this.x, y: this.y } });
     }
   }
 

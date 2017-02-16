@@ -84,11 +84,9 @@ export default class extends Phaser.State {
 
     Streamy.on('killDJ', (d, s) => {
       if (d.data.id === Streamy.id()) {
-        console.log(this.player)
         this.player.kill();
-        console.log(this.player)
         return;
-      }
+      }    
       this.djObjects[d.data.id].kill();
     });
 
@@ -102,7 +100,6 @@ export default class extends Phaser.State {
 
   update() {
     this.game.physics.arcade.collide(this.player, this.platforms);
-
     //  Firing?
     if (this.fireButton.isDown && this.player.visible) {
       this.fireBullet(this.player.facing);
@@ -116,6 +113,7 @@ export default class extends Phaser.State {
 
     for (dj in this.djObjects) {
       if (this.physics.arcade.collide(this.bullets, this.djObjects[dj], this.collisionHandlerBulletDJ, this.collisionProccessorBulletDJ, this)) {
+        this.player.increasePlayerScore();
         Streamy.emit('DJDie', { data: { id: dj }, myID: Streamy.id() });
       }
     }
@@ -196,6 +194,7 @@ respawnPlayer(){
     //  When a bullet hits an alien DJ we kill them both
     bullet.kill();
   }
+
 
   createBulletSettings() {
     // MY BULLETS
