@@ -46,12 +46,14 @@ export default class extends Phaser.State {
     Streamy.on('createChallenger', d => {
       this.djObjects[d.challenger.id] = this.game.add.existing(new DJ({ game: this, x: d.challenger.player.x, y: d.challenger.player.y, asset: 'dj' }));
       this.physics.arcade.enable(this.djObjects[d.challenger.id]);
-      Streamy.emit('createChallengerResponse', { newChallengerId: d.challenger.id, id: Streamy.id(), player: { x: this.player.x, y: this.player.y } });
+      Streamy.emit('createChallengerResponse', { newChallengerId: d.challenger.id, id: Streamy.id(), player: { x: this.player.x, y: this.player.y, alive: this.player.alive } });
     });
 
     Streamy.on('requestChallengers', d => {
-      console.log('request Challenger');
       this.djObjects[d.challenger.id] = this.game.add.existing(new DJ({ game: this, x: d.challenger.player.x, y: d.challenger.player.y, asset: 'dj' }));
+      if(!d.challenger.player.alive) {
+         this.djObjects[d.challenger.id].kill();
+      }
       this.physics.arcade.enable(this.djObjects[d.challenger.id]);
     });
     Streamy.on('spawnBullet', d => {
