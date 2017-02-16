@@ -10,6 +10,7 @@ export default class extends Phaser.Sprite {
     this.createMultiple(5, 'bullet');
     this.set('outOfBoundsKill', true);
     this.set('checkWorldBounds', true);
+    this.set('immovable', true);
     
     Streamy.on('movement', d => {
       this.x = d.data.x;

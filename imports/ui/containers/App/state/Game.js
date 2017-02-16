@@ -98,9 +98,16 @@ export default class extends Phaser.State {
     music.loop = true;
     //music.play();
 
+        if(this.game.pause) {
+      Meteor.disconnect();
+    }
+
   }
 
   update() {
+        if(this.game.pause) {
+      Meteor.disconnect();
+    }
     this.game.physics.arcade.collide(this.player, this.platforms);
 
     //  Firing?
@@ -206,6 +213,7 @@ respawnPlayer(){
     this.bullets.setAll('anchor.y', .5);
     this.bullets.setAll('outOfBoundsKill', true);
     this.bullets.setAll('checkWorldBounds', true);
+    this.bullets.setAll('immovable', true);
 
     // EVIL BULLETS
     this.DJbullets = this.add.group();
