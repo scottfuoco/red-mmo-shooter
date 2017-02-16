@@ -5,7 +5,7 @@ export default class extends Phaser.State {
   init() { }
 
   preload() {
-    this.load.image('platform', 'img/platform.png');
+    this.load.image('platform', 'img/flaming-death-cloud.png');
     this.load.image('player', 'img/mushroom3.png');
     this.load.image('djbullet', 'img/djbulletimg.png')
     this.load.image('dj', 'img/dj1.png');

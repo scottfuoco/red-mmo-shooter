@@ -37,7 +37,7 @@ export default class extends Phaser.State {
 
     this.platforms = this.game.add.physicsGroup();
     this.platforms.create(600, 550, 'platform');
-    this.platforms.create(-50, 350, 'platform');
+    this.platforms.create(0, 350, 'platform');
     this.platforms.create(1000, 200, 'platform');
     this.platforms.setAll('body.immovable', true)
 
@@ -51,8 +51,8 @@ export default class extends Phaser.State {
 
     Streamy.on('requestChallengers', d => {
       this.djObjects[d.challenger.id] = this.game.add.existing(new DJ({ game: this, x: d.challenger.player.x, y: d.challenger.player.y, asset: 'dj' }));
-      if(!d.challenger.player.alive) {
-         this.djObjects[d.challenger.id].kill();
+      if (!d.challenger.player.alive) {
+        this.djObjects[d.challenger.id].kill();
       }
       this.physics.arcade.enable(this.djObjects[d.challenger.id]);
     });
@@ -61,6 +61,15 @@ export default class extends Phaser.State {
     })
     Streamy.on('respawnHim', d => {
       this.djObjects[d.data.id].reset(d.data.x, d.data.y)
+    })
+
+    Streamy.on('platformPosition', d => {
+      console.log('h');
+      this.platforms.forEachAlive(function (platform) {
+        console.log(`platform position ${platform.body.y}`)
+        console.log(`change position position ${d.platform.y}`)
+        platform.y += d.platform.y;
+      });
     })
     this.firingTimer = 0;
     this.bulletTime = 0;
@@ -87,7 +96,7 @@ export default class extends Phaser.State {
       if (d.data.id === Streamy.id()) {
         this.player.kill();
         return;
-      }    
+      }
       this.djObjects[d.data.id].kill();
     });
 
@@ -106,7 +115,8 @@ export default class extends Phaser.State {
   }
 
   update() {
-    this.game.physics.arcade.collide(this.player, this.platforms);
+    Streamy.emit('getPlatformPositionY', { id: Streamy.id(), })
+
     //  Firing?
     if (this.fireButton.isDown && this.player.visible) {
       this.fireBullet(this.player.facing);
@@ -115,6 +125,7 @@ export default class extends Phaser.State {
       this.respawnPlayer()
     }
 
+    this.physics.arcade.collide(this.player, this.platforms, this.collisionHandlerPlayerPlatform, null, this);
     this.physics.arcade.collide(this.bullets, this.platforms, this.collisionHandlerBulletPlatform, null, this);
     this.physics.arcade.collide(this.DJbullets, this.platforms, this.collisionHandlerDJBulletPlatform, null, this);
 
@@ -194,6 +205,10 @@ export default class extends Phaser.State {
     // bullet.kill();
   }
 
+  collisionHandlerPlayerPlatform(player, platform) {
+    Streamy.emit('DJDie', { data: { id: Streamy.id() }, myID: Streamy.id() });
+    player.kill();
+  }
 
   collisionHandlerBulletPlatform(bullet, platform) {
     //  When a bullet hits an alien DJ we kill them both

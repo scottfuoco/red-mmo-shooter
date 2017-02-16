@@ -2,29 +2,38 @@ import { Meteor } from 'meteor/meteor';
 
 Meteor.startup(() => {
   // code to run on server at startup
+  
+  Streamy.on('getPlatformPositionY', (d, s) => {
+    let date = new Date()
+    let platformPositionY = 15*Math.sin(((date.getTime()%360)/360*2*Math.PI));
+    Streamy.emit('platformPosition', { platform: { y: platformPositionY } }, Streamy.sockets(d.id));
+  })
   Streamy.on('clientMove', (d, s) => {
-    Streamy.broadcast('movement', { data: { direction: d.data , id: d.id, x:d.data.x, y:d.data.y } }, d.id);
+    Streamy.broadcast('movement', { data: { direction: d.data, id: d.id, x: d.data.x, y: d.data.y } }, d.id);
   });
 
   Streamy.on('DJDie', (d, s) => {
-    Streamy.broadcast('killDJ', { data: { id: d.data.id} }, d.myID)
+    Streamy.broadcast('killDJ', { data: { id: d.data.id } }, d.myID)
   })
 
   Streamy.on('newChallenger', (d, s) => {
-    Streamy.broadcast('createChallenger', { challenger: { id: d.id, player: {x: d.player.x, y:d.player.y } } }, d.id );
+    Streamy.broadcast('createChallenger', { challenger: { id: d.id, player: { x: d.player.x, y: d.player.y } } }, d.id);
   })
 
   Streamy.on('createChallengerResponse', (d, s) => {
-    Streamy.emit('requestChallengers', { challenger: { id: d.id, player: {x: d.player.x, y:d.player.y, alive: d.player.alive } } }, Streamy.sockets(d.newChallengerId))
+    Streamy.emit('requestChallengers', { challenger: { id: d.id, player: { x: d.player.x, y: d.player.y, alive: d.player.alive } } }, Streamy.sockets(d.newChallengerId))
   })
 
-  Streamy.on('bulletFire', (d , s) => {
-    Streamy.broadcast('spawnBullet', { data: { x:d.data.bulletx, y:d.data.bullety, facing:d.data.facing } }, d.id)
+  Streamy.on('bulletFire', (d, s) => {
+    Streamy.broadcast('spawnBullet', { data: { x: d.data.bulletx, y: d.data.bullety, facing: d.data.facing } }, d.id)
   })
 
-  Streamy.on('respawnMe', (d , s) =>{
-    Streamy.broadcast('respawnHim', { data: { x:d.data.x, y:d.data.y, id:d.id
-    }}, d.id)
+  Streamy.on('respawnMe', (d, s) => {
+    Streamy.broadcast('respawnHim', {
+      data: {
+        x: d.data.x, y: d.data.y, id: d.id
+      }
+    }, d.id)
   })
 
 });
