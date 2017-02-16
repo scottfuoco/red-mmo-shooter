@@ -39,7 +39,7 @@ export default class extends Phaser.Sprite {
       this.body.velocity.y = -650;
     }
 
-    if (this.cursors.down.isDown  && (!this.body.onFloor() || !this.body.touching.down)) {
+    if (this.cursors.down.isDown) {
       this.body.velocity.y = 1300;
     }
     if (this.jumpButton.isDown && (this.body.onFloor() || this.body.touching.down)) {
