@@ -14,7 +14,7 @@ export default class extends Phaser.Sprite {
   increasePlayerScore() {
     this.score++
     localStorage.setItem('myScore', this.score);
-    
+
   }
   getScore(){
     const storage = localStorage.getItem('myScore');
@@ -37,7 +37,7 @@ export default class extends Phaser.Sprite {
       this.body.velocity.y = -650;
     }
 
-    if (this.cursors.down.isDown) {
+    if (this.cursors.down.isDown  && (this.body.onFloor() || this.body.touching.down)) {
       this.body.velocity.y = 1300;
     }
     if (this.jumpButton.isDown && (this.body.onFloor() || this.body.touching.down)) {
