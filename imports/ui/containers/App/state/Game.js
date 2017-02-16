@@ -120,8 +120,10 @@ export default class extends Phaser.State {
 
     for (dj in this.djObjects) {
       if (this.physics.arcade.collide(this.bullets, this.djObjects[dj], this.collisionHandlerBulletDJ, this.collisionProccessorBulletDJ, this)) {
+
         this.player.increasePlayerScore();
         Streamy.emit('DJDie', { data: { id: dj }, myID: Streamy.id() });
+
       }
     }
   }

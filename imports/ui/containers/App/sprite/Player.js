@@ -14,6 +14,7 @@ export default class extends Phaser.Sprite {
   increasePlayerScore() {
     this.score++
     localStorage.setItem('myScore', this.score);
+    
   }
   getScore(){
     const storage = localStorage.getItem('myScore');
