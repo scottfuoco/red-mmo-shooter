@@ -20,9 +20,9 @@ export default class extends Phaser.State {
     const text = this.add.text(0, 0, 'Welcome to play game, press space and play for fun.', style)
     text.setTextBounds(0, 0, this.world.width, 100);
 
-    const splashScreenImg = this.game.add.sprite(this.world.centerX, this.world.centerY-300, 'splashScreenImg');
-    this.game.add.tween(splashScreenImg.scale).to({ x: 2, y: 2 }, 2000, Phaser.Easing.Linear.None, true);
-    const tween = this.game.add.tween(splashScreenImg).to({ angle: 45 }, 2000, Phaser.Easing.Linear.None, true);
+    const splashScreenImg = this.game.add.sprite(this.world.centerX, this.world.centerY-250, 'splashScreenImg');
+    this.game.add.tween(splashScreenImg.scale).to({ x: 1.5, y: 1.5 }, 2000, Phaser.Easing.Linear.None, true);
+    const tween = this.game.add.tween(splashScreenImg).to({ angle: 30 }, 2000, Phaser.Easing.Linear.None, true);
 
     tween.onComplete.add(addSpashText, this);
 
