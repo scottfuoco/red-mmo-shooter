@@ -21,7 +21,6 @@ export default class extends Phaser.State {
     const y = Math.floor(Math.random() * this.world.height);
     this.scaleRatio = window.devicePixelRatio;
 
-
     // create player with starting position
     this.player = new Player({
       game: this,
@@ -44,9 +43,6 @@ export default class extends Phaser.State {
     this.platforms.create(0, 350, 'platform');
     this.platforms.create(1000, 200, 'platform');
     this.platforms.setAll('body.immovable', true)
-    this.platforms.scale.set(this.scaleRatio, this.scaleRatio)
-    this.platforms.setAll('anchor.x', .5);
-    this.platforms.setAll('anchor.y', .5);
 
     this.goodPlatforms = this.game.add.physicsGroup();
     this.goodPlatforms.create(0, 200, 'goodPlatform');
@@ -237,7 +233,6 @@ export default class extends Phaser.State {
     this.bullets = this.add.group();
     this.bullets.enableBody = true;
     this.bullets.createMultiple(5, 'bullet');
-    // this.bullets.scale.set(this.scaleRatio, this.scaleRatio)
     this.bullets.setAll('anchor.x', .5);
     this.bullets.setAll('anchor.y', .5);
     this.bullets.setAll('outOfBoundsKill', true);
@@ -248,7 +243,6 @@ export default class extends Phaser.State {
     this.DJbullets = this.add.group();
     this.DJbullets.enableBody = true;
     this.DJbullets.createMultiple(500, 'djbullet');
-    this.DJbullets.scale.set(this.scaleRatio, this.scaleRatio)
     this.DJbullets.setAll('anchor.x', .5);
     this.DJbullets.setAll('anchor.y', .5);
     this.DJbullets.setAll('outOfBoundsKill', true);

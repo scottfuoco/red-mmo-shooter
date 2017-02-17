@@ -10,8 +10,6 @@ export default class extends Phaser.State {
     text.anchor.setTo(0.5, 0.5);
     // console.log(this.scale.aspectRatio)
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL
-    this.scale.setMinMax((1366, 768, 1366, 768))
-    this.scale.setupScale(1366, 768)
     // this.scale.pageAlignHorizontally = true;
     // this.scale.pageAlignVertically = false;
     // this.scale.windowConstraints.bottom = "visual";
