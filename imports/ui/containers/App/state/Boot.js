@@ -16,6 +16,5 @@ export default class extends Phaser.State {
     if(Meteor.userId()){
       this.state.start('Splash')
     }
-    
   }
 }

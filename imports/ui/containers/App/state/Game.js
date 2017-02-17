@@ -17,6 +17,7 @@ export default class extends Phaser.State {
     // generate random starting x posiiton based on world width
     const x = Math.floor(Math.random() * this.world.width);
     const y = Math.floor(Math.random() * this.world.height);
+    this.scaleRatio = window.devicePixelRatio;
 
     // create player with starting position
     this.player = new Player({
@@ -25,6 +26,8 @@ export default class extends Phaser.State {
       y,
       asset: 'player',
     });
+    this.player.scale.setTo(this.scaleRatio, this.scaleRatio)
+    // this.player.anchor.setTo(0.5)
     // send server players coordinates to broadcast to all other clients
     Streamy.emit('newChallenger', { id: Streamy.id(), player: { x, y } });
 
@@ -32,7 +35,7 @@ export default class extends Phaser.State {
       this.djObjects[d.data.id].x = d.data.x;
       this.djObjects[d.data.id].y = d.data.y;
     });
-
+    console.log(Meteor.userId())
     this.platforms = this.game.add.physicsGroup();
     this.platforms.create(700, 600, 'platform');
     this.platforms.create(0, 350, 'platform');
@@ -51,6 +54,8 @@ export default class extends Phaser.State {
     Streamy.on('createChallenger', d => {
       this.djObjects[d.challenger.id] = this.game.add.existing(new DJ({ game: this, x: d.challenger.player.x, y: d.challenger.player.y, asset: 'dj' }));
       this.physics.arcade.enable(this.djObjects[d.challenger.id]);
+      this.DJ.scale.scale.setTo(this.scaleRatio, this.scaleRatio)
+      this.DJ.anchor.setTo(0.5)
       Streamy.emit('createChallengerResponse', { newChallengerId: d.challenger.id, id: Streamy.id(), player: { x: this.player.x, y: this.player.y, alive: this.player.alive } });
     });
 
@@ -105,10 +110,8 @@ export default class extends Phaser.State {
 
     // this.game.onPause.add(function () {
     //   Streamy.emit('DJDie', { data: { id: Streamy.id() }, myID: Streamy.id() });
-    //   this.state.start('Splash')
-
+    //   this.state.start('Splash')   
     // }, this);
-
   }
 
   update() {
@@ -157,7 +160,7 @@ export default class extends Phaser.State {
       bulletFire.play()
       if (bullet) {
         //  And fire it
-        bullet.reset(this.player.x, this.player.y + 8);
+        bullet.reset(this.player.x, this.player.y);
         if (facing === 'left') {
           bullet.angle = -180;
           bullet.body.velocity.x = -400;
@@ -198,7 +201,13 @@ export default class extends Phaser.State {
 
   collisionHandlerBulletDJ(DJ, bullet) {
     //  When a bullet hits an alien DJ we kill them both
+    console.log(bullet)
+    if (bullet.body.velocity.x < 0) bullet.body.velocity.x = -400
+    if (bullet.body.velocity.x > 0) bullet.body.velocity.x = 400
+    //= !bullet.body.velocity.x
+    console.log(DJ)
     DJ.kill();
+
     if (bullet.body.velocity.x > 0){
       bullet.body.velocity.x = 400;
     }else{
@@ -243,10 +252,11 @@ export default class extends Phaser.State {
     this.DJbullets.setAll('checkWorldBounds', true);
   }
 
+
+
   render() {
-    // this.game.debug.body(this.dj);
-    // this.game.debug.body(this.bullets);
-    // this.game.debug.body(this.player);
+    this.game.debug.body(this.bullets);
+    this.game.debug.body(this.player);
   }
 }
 
