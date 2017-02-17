@@ -18,11 +18,16 @@ export default class extends Phaser.State {
   create() {
     this.goToGame = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     this.goToHighscore = this.input.keyboard.addKey(Phaser.Keyboard.H);
-    const style = { font: "bold 32px Arial", fill: "#000", boundsAlignH: "cnter", boundsAlignV: "middle" };
+    const style = { font: "bold 32px Arial", fill: "#000", boundsAlignH: "center", boundsAlignV: "middle" };
     const text = this.add.text(0, 0, 'Welcome to play game, press space and play for fun.', style)
     text.setTextBounds(0, 0, this.world.width, 100);
 
-    const splashScreenImg = this.game.add.sprite(this.world.centerX, this.world.centerY-250, 'splashScreenImg');
+    const controls1 = this.add.text(100, 200, '← : move left', style)
+    const controls2 = this.add.text(100, 250, '→ : move right', style)
+    const controls3 = this.add.text(100, 300, '↑ : jetpack', style)
+    const controls4 = this.add.text(100, 350, 'spacebar: jump and shoot', style)
+
+    const splashScreenImg = this.game.add.sprite(this.world.centerX, 100, 'splashScreenImg');
     this.game.add.tween(splashScreenImg.scale).to({ x: 1.5, y: 1.5 }, 2000, Phaser.Easing.Linear.None, true);
     const tween = this.game.add.tween(splashScreenImg).to({ angle: 30 }, 2000, Phaser.Easing.Linear.None, true);
 
@@ -30,7 +35,7 @@ export default class extends Phaser.State {
 
     function addSpashText() {
       const text2 = this.add.text(0, 0, 'Smells like wieners.', style)
-      text2.setTextBounds(0, 500, this.world.width, 100);
+      text2.setTextBounds(0, 650, this.world.width, 100);
     }
   }
 
