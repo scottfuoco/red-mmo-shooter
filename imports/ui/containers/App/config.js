@@ -1,5 +1,5 @@
 export default {
-  gameWidth: `${window.innerWidth}+px`,
-  gameHeight:  `${window.innerHeight}+px`,
+  gameWidth: 1300,
+  gameHeight: 600,
   localStorageName: 'game'
 }

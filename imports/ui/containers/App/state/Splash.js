@@ -13,6 +13,7 @@ export default class extends Phaser.State {
     this.load.audio('backgroundMusic', ['audio/backgroundMusic.mp3']);
     this.load.audio('bulletFire', ['audio/bulletFire.mp3']);
     this.load.image('splashScreenImg', 'img/splash-screen-img.png');
+    this.load.image('bullet', 'img/bullet.png');
   }
 
   create() {
@@ -21,7 +22,6 @@ export default class extends Phaser.State {
     const style = { font: "bold 32px Arial", fill: "#000", boundsAlignH: "cnter", boundsAlignV: "middle" };
     const text = this.add.text(0, 0, 'Welcome to play game, press space and play for fun.', style)
     text.setTextBounds(0, 0, this.world.width, 100);
-
     const splashScreenImg = this.game.add.sprite(this.world.centerX, this.world.centerY-250, 'splashScreenImg');
     this.game.add.tween(splashScreenImg.scale).to({ x: 1.5, y: 1.5 }, 2000, Phaser.Easing.Linear.None, true);
     const tween = this.game.add.tween(splashScreenImg).to({ angle: 30 }, 2000, Phaser.Easing.Linear.None, true);

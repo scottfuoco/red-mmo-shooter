@@ -7,15 +7,13 @@ export default class extends Phaser.State {
 
   }
   preload() {
-    this.load.image('bullet', 'img/bullet.png');
+    
   }
 
   create() {
     this.stage.disableVisibilityChange = false;
     this.physics.startSystem(Phaser.Physics.ARCADE);
-
-    // this.bullets = bulletFactory.create(this);
-
+    
     // generate random starting x posiiton based on world width
     const x = Math.floor(Math.random() * this.world.width);
     const y = Math.floor(Math.random() * this.world.height);
@@ -105,11 +103,11 @@ export default class extends Phaser.State {
     music.loop = true;
     //music.play();
 
-    this.game.onPause.add(function () {
-      Streamy.emit('DJDie', { data: { id: Streamy.id() }, myID: Streamy.id() });
-      this.state.start('Splash')
+    // this.game.onPause.add(function () {
+    //   Streamy.emit('DJDie', { data: { id: Streamy.id() }, myID: Streamy.id() });
+    //   this.state.start('Splash')
 
-    }, this);
+    // }, this);
 
   }
 
@@ -201,6 +199,11 @@ export default class extends Phaser.State {
   collisionHandlerBulletDJ(DJ, bullet) {
     //  When a bullet hits an alien DJ we kill them both
     DJ.kill();
+    if (bullet.body.velocity.x > 0){
+      bullet.body.velocity.x = 400;
+    }else{
+      bullet.body.velocity.x = -400;
+    }
     // bullet.kill();
   }
 
