@@ -3,11 +3,6 @@ import { Meteor } from 'meteor/meteor';
 Meteor.startup(() => {
   // code to run on server at startup
   
-  Streamy.on('getPlatformPositionY', (d, s) => {
-    let date = new Date()
-    let platformPositionY = 15*Math.sin(((date.getTime()%360)/360*2*Math.PI));
-    Streamy.emit('platformPosition', { platform: { y: platformPositionY } }, Streamy.sockets(d.id));
-  })
   Streamy.on('clientMove', (d, s) => {
     Streamy.broadcast('movement', { data: { direction: d.data, id: d.id, x: d.data.x, y: d.data.y } }, d.id);
   });

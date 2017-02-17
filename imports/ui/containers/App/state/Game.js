@@ -36,10 +36,17 @@ export default class extends Phaser.State {
     });
 
     this.platforms = this.game.add.physicsGroup();
-    this.platforms.create(600, 550, 'platform');
+    this.platforms.create(700, 600, 'platform');
     this.platforms.create(0, 350, 'platform');
     this.platforms.create(1000, 200, 'platform');
     this.platforms.setAll('body.immovable', true)
+
+    this.goodPlatforms = this.game.add.physicsGroup();
+    this.goodPlatforms.create(0, 200, 'goodPlatform');
+    this.goodPlatforms.create(400, 650, 'goodPlatform');
+    this.goodPlatforms.create(1200, 700, 'goodPlatform');
+    this.goodPlatforms.setAll('body.immovable', true)
+
 
     this.djObjects = {};
 
@@ -63,14 +70,6 @@ export default class extends Phaser.State {
       this.djObjects[d.data.id].reset(d.data.x, d.data.y)
     })
 
-    Streamy.on('platformPosition', d => {
-      console.log('h');
-      this.platforms.forEachAlive(function (platform) {
-        console.log(`platform position ${platform.body.y}`)
-        console.log(`change position position ${d.platform.y}`)
-        platform.y += d.platform.y;
-      });
-    })
     this.firingTimer = 0;
     this.bulletTime = 0;
     this.createBulletSettings()
@@ -115,7 +114,7 @@ export default class extends Phaser.State {
   }
 
   update() {
-    Streamy.emit('getPlatformPositionY', { id: Streamy.id(), })
+    this.physics.arcade.collide(this.player, this.goodPlatforms)
 
     //  Firing?
     if (this.fireButton.isDown && this.player.visible) {
