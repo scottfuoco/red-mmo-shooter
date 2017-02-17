@@ -106,7 +106,7 @@ export default class extends Phaser.State {
     music = this.game.add.audio('backgroundMusic');
     bulletFire = this.game.add.audio('bulletFire');
     music.loop = true;
-    //music.play();
+    music.play();
 
     // this.game.onPause.add(function () {
     //   Streamy.emit('DJDie', { data: { id: Streamy.id() }, myID: Streamy.id() });

@@ -11,6 +11,7 @@ export default class extends Phaser.State {
     this.load.image('djbullet', 'img/djbulletimg.png')
     this.load.image('dj', 'img/dj1.png');
     this.load.audio('backgroundMusic', ['audio/backgroundMusic.mp3']);
+    this.load.audio('splashScreenMusic', ['audio/splashScreenMusic.mp3']);
     this.load.audio('bulletFire', ['audio/bulletFire.mp3']);
     this.load.image('splashScreenImg', 'img/splash-screen-img.png');
     this.load.image('bullet', 'img/bullet.png');
@@ -22,21 +23,26 @@ export default class extends Phaser.State {
     const style = { font: "bold 32px Arial", fill: "#000", boundsAlignH: "center", boundsAlignV: "middle" };
     const text = this.add.text(0, 0, 'Welcome to play game, press space and play for fun.', style)
     text.setTextBounds(0, 0, this.world.width, 100);
-    const controls1 = this.add.text(100, 200, '← : move left', style)
-    const controls2 = this.add.text(100, 250, '→ : move right', style)
-    const controls3 = this.add.text(100, 300, '↑ : jetpack', style)
-    const controls4 = this.add.text(100, 350, 'spacebar: jump and shoot', style)
+    const controls1 = this.add.text(100, 200, '← : move left', style);
+    const controls2 = this.add.text(100, 250, '→ : move right', style);
+    const controls3 = this.add.text(100, 300, '↑ : jetpack', style);
+    const controls4 = this.add.text(100, 350, 'spacebar: jump and shoot', style);
+    const controls5 = this.add.text(100, 400, 'r: to respawn', style);
 
-    const splashScreenImg = this.game.add.sprite(this.world.centerX, 100, 'splashScreenImg');
-    this.game.add.tween(splashScreenImg.scale).to({ x: 1.5, y: 1.5 }, 2000, Phaser.Easing.Linear.None, true);
+    const splashScreenImg = this.game.add.sprite(this.world.centerX, 50, 'splashScreenImg');
+    this.game.add.tween(splashScreenImg.scale).to({ x: 1.2, y: 1.2 }, 2000, Phaser.Easing.Linear.None, true);
     const tween = this.game.add.tween(splashScreenImg).to({ angle: 30 }, 2000, Phaser.Easing.Linear.None, true);
 
     tween.onComplete.add(addSpashText, this);
 
     function addSpashText() {
       const text2 = this.add.text(0, 0, 'Smells like wieners.', style)
-      text2.setTextBounds(0, 650, this.world.width, 100);
+      text2.setTextBounds(0, 500, this.world.width, 100);
     }
+
+    music = this.game.add.audio('splashScreenMusic');
+    music.loop = true;
+    music.play();
   }
 
   update() {
@@ -44,6 +50,7 @@ export default class extends Phaser.State {
 
     if (Meteor.userId()) {
       if (this.goToGame.isDown) {
+        music.stop();
         this.state.start('Game');
       }
       if (this.goToHighscore.isDown) {

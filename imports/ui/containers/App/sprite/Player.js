@@ -15,12 +15,9 @@ export default class extends Phaser.Sprite {
   increasePlayerScore() {
     this.score++
     localStorage.setItem('myScore', this.score);
-<<<<<<< HEAD
+
     Meteor.call('score.upsert', this.score)
-=======
-    
-    Meteor.users.upsert( { _id: Meteor.userId() }, { $set:{ 'profile.score': this.score } })
->>>>>>> master
+
   }
   getScore() {
     const storage = localStorage.getItem('myScore');
