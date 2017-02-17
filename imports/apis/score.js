@@ -4,6 +4,7 @@ export const Score = new Mongo.Collection('score');
 
 if (Meteor.isServer) {
   Meteor.publish('score', function scorePublication() {
+    console.log(Score.find({}, sort({'score':-1}).limit(5)))
     return Score.find({}, sort({'score':-1}).limit(5))
   });
 
