@@ -108,10 +108,10 @@ export default class extends Phaser.State {
     music.loop = true;
     //music.play();
 
-    // this.game.onPause.add(function () {
-    //   Streamy.emit('DJDie', { data: { id: Streamy.id() }, myID: Streamy.id() });
-    //   this.state.start('Splash')   
-    // }, this);
+    this.game.onPause.add(function () {
+      Streamy.emit('DJDie', { data: { id: Streamy.id() }, myID: Streamy.id() });
+      this.state.start('Splash')   
+    }, this);
   }
 
   update() {

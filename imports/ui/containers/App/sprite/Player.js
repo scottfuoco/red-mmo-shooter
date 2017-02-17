@@ -6,7 +6,6 @@ export default class extends Phaser.Sprite {
   constructor({ game, x, y, asset }) {
     super(game, x, y, asset)
     this.cursors = game.input.keyboard.createCursorKeys()
-    // this.fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     this.jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     this.anchor.setTo(0.5)
     this.score = this.getScore()
@@ -15,12 +14,7 @@ export default class extends Phaser.Sprite {
   increasePlayerScore() {
     this.score++
     localStorage.setItem('myScore', this.score);
-<<<<<<< HEAD
     Meteor.call('score.upsert', this.score)
-=======
-    
-    Meteor.users.upsert( { _id: Meteor.userId() }, { $set:{ 'profile.score': this.score } })
->>>>>>> master
   }
   getScore() {
     const storage = localStorage.getItem('myScore');
@@ -29,7 +23,6 @@ export default class extends Phaser.Sprite {
   }
 
   update() {
-    // console.log(this);
     if (this.alive) console.log("I EXIST")
     this.body.velocity.x = 0;
     this.body.gravity.y = 900;
