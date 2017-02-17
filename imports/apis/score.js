@@ -11,6 +11,6 @@ if (Meteor.isServer) {
 }
 Meteor.methods({
   'score.upsert'(score) {
-    Score.upsert(Meteor.userId, { $set: { userEmail: Meteor.user().emails[0].address, score: score } });
+    Score.upsert(Meteor.userId(), { $set: { userEmail: Meteor.user().emails[0].address, score: score } });
   },
 });
