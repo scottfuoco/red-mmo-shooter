@@ -1,6 +1,6 @@
 import Phaser from '/imports/startup/phaser-split.js';
 import DJ from './DJ';
-import Score from './../../../../../collections';
+import Score from '../../../../apis/score'
 export default class extends Phaser.Sprite {
 
   constructor({ game, x, y, asset }) {
@@ -15,7 +15,7 @@ export default class extends Phaser.Sprite {
   increasePlayerScore() {
     this.score++
     localStorage.setItem('myScore', this.score);
-    Score.upsert({userId: Meteor.UserEmail, score: this.score });
+    Meteor.call('score.upsert', this.score)
   }
   getScore(){
     const storage = localStorage.getItem('myScore');
