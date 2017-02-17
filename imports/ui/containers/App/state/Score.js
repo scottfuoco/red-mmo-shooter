@@ -1,5 +1,6 @@
 import Phaser from '/imports/startup/phaser-split'
 import { centerGameObjects } from '../utils'
+import {score } from './../../../../apis/score'
 
 export default class extends Phaser.State {
   init() { }
@@ -8,10 +9,13 @@ export default class extends Phaser.State {
   }
 
   create() {
+    Meteor.subscribe('score');
     this.goToGame = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     this.goToSplash = this.input.keyboard.addKey(Phaser.Keyboard.H);
     const style = { font: "bold 32px Arial", fill: "#000", boundsAlignH: "cnter", boundsAlignV: "middle" };
-    const text = this.add.text(0, 0, `Your shit score is ${localStorage.getItem('myScore')}`, style)
+    const text = this.add.text(0, 0, `Your score is ${localStorage.getItem('myScore')}`, style)
+    const text1 = this.add.text(0, 0, `HIGHSCORE`, style)
+    
     // Make the score request one from the DB
     text.setTextBounds(0, 0, this.world.width, 100);
 

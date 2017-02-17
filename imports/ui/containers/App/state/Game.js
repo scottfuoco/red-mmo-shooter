@@ -17,7 +17,6 @@ export default class extends Phaser.State {
     // generate random starting x posiiton based on world width
     const x = Math.floor(Math.random() * this.world.width);
     const y = Math.floor(Math.random() * this.world.height);
-    this.scaleRatio = window.devicePixelRatio;
 
     // create player with starting position
     this.player = new Player({
@@ -26,8 +25,6 @@ export default class extends Phaser.State {
       y,
       asset: 'player',
     });
-    this.player.scale.setTo(this.scaleRatio, this.scaleRatio)
-    // this.player.anchor.setTo(0.5)
     // send server players coordinates to broadcast to all other clients
     Streamy.emit('newChallenger', { id: Streamy.id(), player: { x, y } });
 
@@ -54,8 +51,6 @@ export default class extends Phaser.State {
     Streamy.on('createChallenger', d => {
       this.djObjects[d.challenger.id] = this.game.add.existing(new DJ({ game: this, x: d.challenger.player.x, y: d.challenger.player.y, asset: 'dj' }));
       this.physics.arcade.enable(this.djObjects[d.challenger.id]);
-      this.DJ.scale.scale.setTo(this.scaleRatio, this.scaleRatio)
-      this.DJ.anchor.setTo(0.5)
       Streamy.emit('createChallengerResponse', { newChallengerId: d.challenger.id, id: Streamy.id(), player: { x: this.player.x, y: this.player.y, alive: this.player.alive } });
     });
 
@@ -106,12 +101,12 @@ export default class extends Phaser.State {
     music = this.game.add.audio('backgroundMusic');
     bulletFire = this.game.add.audio('bulletFire');
     music.loop = true;
-    //music.play();
+    music.play();
 
-    this.game.onPause.add(function () {
-      Streamy.emit('DJDie', { data: { id: Streamy.id() }, myID: Streamy.id() });
-      this.state.start('Splash')   
-    }, this);
+  //   this.game.onPause.add(function () {
+  //     Streamy.emit('DJDie', { data: { id: Streamy.id() }, myID: Streamy.id() });
+  //     this.state.start('Splash')   
+  //   }, this);
   }
 
   update() {
@@ -131,10 +126,8 @@ export default class extends Phaser.State {
 
     for (dj in this.djObjects) {
       if (this.physics.arcade.collide(this.bullets, this.djObjects[dj], this.collisionHandlerBulletDJ, this.collisionProccessorBulletDJ, this)) {
-
         this.player.increasePlayerScore();
         Streamy.emit('DJDie', { data: { id: dj }, myID: Streamy.id() });
-
       }
     }
   }
@@ -170,7 +163,6 @@ export default class extends Phaser.State {
           bullet.body.velocity.x = 400;
         }
         Streamy.emit('bulletFire', { data: { bulletx: this.player.x, bullety: this.player.y, facing }, id: Streamy.id() });
-
         this.bulletTime = this.game.time.now + 200;
       }
     }
@@ -255,8 +247,6 @@ export default class extends Phaser.State {
 
 
   render() {
-    this.game.debug.body(this.bullets);
-    this.game.debug.body(this.player);
   }
 }
 
