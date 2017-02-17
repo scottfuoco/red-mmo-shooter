@@ -238,7 +238,6 @@ export default class extends Phaser.State {
     bullet.kill();
   }
 
-
   createBulletSettings() {
     // MY BULLETS
     this.bullets = this.add.group();
@@ -259,8 +258,6 @@ export default class extends Phaser.State {
     this.DJbullets.setAll('outOfBoundsKill', true);
     this.DJbullets.setAll('checkWorldBounds', true);
   }
-
-
 
   render() {
   }
