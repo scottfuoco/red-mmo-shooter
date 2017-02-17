@@ -40,13 +40,20 @@ export default class extends Phaser.State {
     });
     console.log(Meteor.userId())
     this.platforms = this.game.add.physicsGroup();
-    this.platforms.create(600, 550, 'platform');
-    this.platforms.create(-50, 350, 'platform');
+    this.platforms.create(700, 600, 'platform');
+    this.platforms.create(0, 350, 'platform');
     this.platforms.create(1000, 200, 'platform');
     this.platforms.setAll('body.immovable', true)
     this.platforms.scale.set(this.scaleRatio, this.scaleRatio)
     this.platforms.setAll('anchor.x', .5);
     this.platforms.setAll('anchor.y', .5);
+
+    this.goodPlatforms = this.game.add.physicsGroup();
+    this.goodPlatforms.create(0, 200, 'goodPlatform');
+    this.goodPlatforms.create(400, 650, 'goodPlatform');
+    this.goodPlatforms.create(1200, 700, 'goodPlatform');
+    this.goodPlatforms.setAll('body.immovable', true)
+
 
     this.djObjects = {};
 
@@ -71,6 +78,7 @@ export default class extends Phaser.State {
     Streamy.on('respawnHim', d => {
       this.djObjects[d.data.id].reset(d.data.x, d.data.y)
     })
+
     this.firingTimer = 0;
     this.bulletTime = 0;
     this.createBulletSettings()
@@ -113,7 +121,8 @@ export default class extends Phaser.State {
   }
 
   update() {
-    this.game.physics.arcade.collide(this.player, this.platforms);
+    this.physics.arcade.collide(this.player, this.goodPlatforms)
+
     //  Firing?
     if (this.fireButton.isDown && this.player.visible) {
       this.fireBullet(this.player.facing);
@@ -122,6 +131,7 @@ export default class extends Phaser.State {
       this.respawnPlayer()
     }
 
+    this.physics.arcade.collide(this.player, this.platforms, this.collisionHandlerPlayerPlatform, null, this);
     this.physics.arcade.collide(this.bullets, this.platforms, this.collisionHandlerBulletPlatform, null, this);
     this.physics.arcade.collide(this.DJbullets, this.platforms, this.collisionHandlerDJBulletPlatform, null, this);
 
@@ -207,6 +217,10 @@ export default class extends Phaser.State {
     // bullet.kill();
   }
 
+  collisionHandlerPlayerPlatform(player, platform) {
+    Streamy.emit('DJDie', { data: { id: Streamy.id() }, myID: Streamy.id() });
+    player.kill();
+  }
 
   collisionHandlerBulletPlatform(bullet, platform) {
     //  When a bullet hits an alien DJ we kill them both
