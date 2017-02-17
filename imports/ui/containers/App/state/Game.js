@@ -7,13 +7,13 @@ export default class extends Phaser.State {
 
   }
   preload() {
-    
+
   }
 
   create() {
     this.stage.disableVisibilityChange = false;
     this.physics.startSystem(Phaser.Physics.ARCADE);
-    
+
     // generate random starting x posiiton based on world width
     const x = Math.floor(Math.random() * this.world.width);
     const y = Math.floor(Math.random() * this.world.height);
@@ -25,6 +25,8 @@ export default class extends Phaser.State {
       y,
       asset: 'player',
     });
+    this.game.add.existing(this.player);
+
     // send server players coordinates to broadcast to all other clients
     Streamy.emit('newChallenger', { id: Streamy.id(), player: { x, y } });
 
@@ -32,17 +34,17 @@ export default class extends Phaser.State {
       this.djObjects[d.data.id].x = d.data.x;
       this.djObjects[d.data.id].y = d.data.y;
     });
-    console.log(Meteor.userId())
+
     this.platforms = this.game.add.physicsGroup();
-    this.platforms.create(700, 600, 'platform');
+    this.platforms.create(700, 400, 'platform');
     this.platforms.create(0, 350, 'platform');
     this.platforms.create(1000, 200, 'platform');
     this.platforms.setAll('body.immovable', true)
 
     this.goodPlatforms = this.game.add.physicsGroup();
     this.goodPlatforms.create(0, 200, 'goodPlatform');
-    this.goodPlatforms.create(400, 650, 'goodPlatform');
-    this.goodPlatforms.create(1200, 700, 'goodPlatform');
+    this.goodPlatforms.create(400, 450, 'goodPlatform');
+    this.goodPlatforms.create(800, 200, 'goodPlatform');
     this.goodPlatforms.setAll('body.immovable', true)
 
 
@@ -78,16 +80,7 @@ export default class extends Phaser.State {
     this.fireButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     this.respawnkey = this.input.keyboard.addKey(Phaser.Keyboard.R);
 
-    this.game.add.existing(this.player);
     this.game.add.existing(this.bullets.getFirstExists(false));
-    this.spawnDJ = false;
-    this.spawnDJLocation = {};
-
-
-    Streamy.on('spawnDJ', (d, s) => {
-      this.spawnDJ = true;
-      this.spawnDJLocation = { x: d.data.x, y: d.data.y };
-    });
 
     Streamy.on('killDJ', (d, s) => {
       if (d.data.id === Streamy.id()) {
@@ -97,21 +90,27 @@ export default class extends Phaser.State {
       this.djObjects[d.data.id].kill();
     });
 
+    while (this.physics.arcade.overlap(this.player, this.platforms, null, this.platformSpawnCheck, this) ||
+      this.physics.arcade.overlap(this.player, this.goodPlatforms, null, this.platformSpawnCheck, this)) {
+      let newX = Math.floor(Math.random() * this.world.width);
+      let newY = Math.floor(Math.random() * this.world.height);
+      this.player.x = newX;
+      this.player.y = newY;
+      this.player.reset(newX, newY)
+    }
 
     music = this.game.add.audio('backgroundMusic');
     bulletFire = this.game.add.audio('bulletFire');
     music.loop = true;
     music.play();
 
-  //   this.game.onPause.add(function () {
-  //     Streamy.emit('DJDie', { data: { id: Streamy.id() }, myID: Streamy.id() });
-  //     this.state.start('Splash')   
-  //   }, this);
+    //   this.game.onPause.add(function () {
+    //     Streamy.emit('DJDie', { data: { id: Streamy.id() }, myID: Streamy.id() });
+    //     this.state.start('Splash')   
+    //   }, this);
   }
 
   update() {
-    this.physics.arcade.collide(this.player, this.goodPlatforms)
-
     //  Firing?
     if (this.fireButton.isDown && this.player.visible) {
       this.fireBullet(this.player.facing);
@@ -120,6 +119,7 @@ export default class extends Phaser.State {
       this.respawnPlayer()
     }
 
+    this.physics.arcade.collide(this.player, this.goodPlatforms);
     this.physics.arcade.collide(this.player, this.platforms, this.collisionHandlerPlayerPlatform, null, this);
     this.physics.arcade.collide(this.bullets, this.platforms, this.collisionHandlerBulletPlatform, null, this);
     this.physics.arcade.collide(this.DJbullets, this.platforms, this.collisionHandlerDJBulletPlatform, null, this);
@@ -136,10 +136,28 @@ export default class extends Phaser.State {
     bullet.kill();
   }
 
+  platformSpawnCheck() {
+    return true;
+  }
+
   respawnPlayer() {
-    const newX = Math.floor(Math.random() * this.world.width);
-    const newY = Math.floor(Math.random() * this.world.height);
+    let newX = Math.floor(Math.random() * this.world.width);
+    let newY = Math.floor(Math.random() * this.world.height);
+    this.player.x = newX;
+    this.player.y = newY;
     this.player.reset(newX, newY)
+
+    while (this.physics.arcade.overlap(this.player, this.platforms, null, this.platformSpawnCheck, this) ||
+      this.physics.arcade.overlap(this.player, this.goodPlatforms, null, this.platformSpawnCheck, this)) {
+      newX = Math.floor(Math.random() * this.world.width);
+      newY = Math.floor(Math.random() * this.world.height);
+      this.player.x = newX;
+      this.player.y = newY;
+      this.player.reset(newX, newY)
+    }
+
+    this.player.reset(newX, newY)
+
     Streamy.emit('respawnMe', { data: { x: newX, y: newY }, id: Streamy.id() })
   }
   collisionProccessorBulletDJ() {
@@ -193,16 +211,14 @@ export default class extends Phaser.State {
 
   collisionHandlerBulletDJ(DJ, bullet) {
     //  When a bullet hits an alien DJ we kill them both
-    console.log(bullet)
     if (bullet.body.velocity.x < 0) bullet.body.velocity.x = -400
     if (bullet.body.velocity.x > 0) bullet.body.velocity.x = 400
     //= !bullet.body.velocity.x
-    console.log(DJ)
     DJ.kill();
 
-    if (bullet.body.velocity.x > 0){
+    if (bullet.body.velocity.x > 0) {
       bullet.body.velocity.x = 400;
-    }else{
+    } else {
       bullet.body.velocity.x = -400;
     }
     // bullet.kill();
