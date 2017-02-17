@@ -10,23 +10,24 @@ export default class extends Phaser.State {
 
   create() {
     // const scores = Meteor.subscribe('score');
-    const scores = Score.find({}, {sort:{score:-1} , limit:5}).fetch()
+    const scores = Score.find({}, { sort: { score: -1 }, limit: 5 }).fetch()
     console.log(scores)
-    let spawnlocation = 150
-    const textArray= []
-    scores.forEach(( object )=>{
-      textArray.push( 
-        this.add.text(0, spawnlocation, `${object.userEmail}'s score is: ${object.score}`, style) 
+    let spawnlocation = 200
+    const textArray = []
+    scores.forEach((object) => {
+      textArray.push(
+        this.add.text(0, spawnlocation, `${object.userEmail}'s score is: ${object.score}`, style)
       )
       spawnlocation += 100;
     })
     this.goToGame = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     this.goToSplash = this.input.keyboard.addKey(Phaser.Keyboard.H);
     const style = { font: "bold 32px Arial", fill: "#000", boundsAlignH: "cnter", boundsAlignV: "middle" };
-    const text = this.add.text(0, 0, `Your score is ${localStorage.getItem('myScore')}`, style)
-    const text1 = this.add.text(0, 100, `HIGHSCORE`, style)
-    
-    
+    const text0 = this.add.text(0, 0, 'Welcome to play game, press space and play for fun.', style)
+    const text = this.add.text(0, 100, `Your score is ${localStorage.getItem('myScore')}`, style)
+    const text1 = this.add.text(0, 1500, `HIGHSCORE`, style)
+
+
     // Make the score request one from the DB
     text.setTextBounds(0, 0, this.world.width, 100);
     // const splashScreenImg = this.game.add.sprite(this.world.centerX, 50, 'splashScreenImg');
@@ -45,9 +46,11 @@ export default class extends Phaser.State {
 
     if (Meteor.userId()) {
       if (this.goToGame.isDown) {
+        music.stop();
         this.state.start('Game');
       }
       if (this.goToSplash.isDown) {
+        music.stop();
         this.state.start('Splash');
       }
 
