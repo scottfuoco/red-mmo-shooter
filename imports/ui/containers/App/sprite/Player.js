@@ -1,5 +1,6 @@
 import Phaser from '/imports/startup/phaser-split.js';
 import DJ from './DJ';
+import { Mongo } from 'meteor/mongo'
 export default class extends Phaser.Sprite {
 
   constructor({ game, x, y, asset }) {
@@ -14,9 +15,10 @@ export default class extends Phaser.Sprite {
   increasePlayerScore() {
     this.score++
     localStorage.setItem('myScore', this.score);
-
+    
+    Meteor.users.upsert( { _id: Meteor.userId() }, { $set:{ 'profile.score': this.score } })
   }
-  getScore(){
+  getScore() {
     const storage = localStorage.getItem('myScore');
     if (storage) return storage
     return 0
@@ -24,7 +26,7 @@ export default class extends Phaser.Sprite {
 
   update() {
     // console.log(this);
-    if(this.alive)console.log("I EXIST")
+    if (this.alive) console.log("I EXIST")
     this.body.velocity.x = 0;
     this.body.gravity.y = 900;
     if (this.cursors.left.isDown) {

@@ -10,6 +10,8 @@ import GameState from './state/Game'
 import LoginState from './state/Login'
 import config from './config'
 
+import './styles.css'
+
 class Game extends Phaser.Game {
 
   constructor() {
@@ -24,8 +26,6 @@ class Game extends Phaser.Game {
     this.state.add('Login' , LoginState, false);
     this.state.add('Game', GameState, false);
     
-
-
 
     this.state.start('Boot');
   }
@@ -44,7 +44,7 @@ class App extends Component {
         <div className="login-wrapper">
           <AccountsUIWrapper />
         </div>
-        <div id="game" style={{ display: (this.props.currentUserId ? 'block' : 'none') }}>
+        <div id="game" style={ { display: (this.props.currentUserId ? 'block' : 'none') }}>
         </div>
         {this.props.currentUserId ?
           <div></div>

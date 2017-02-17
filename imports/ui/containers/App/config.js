@@ -1,5 +1,5 @@
 export default {
-  gameWidth: `${window.innerWidth}+px`,
-  gameHeight:  `${window.innerHeight}+px`,
+  gameWidth:  window.innerWidth * window.devicePixelRatio,
+  gameHeight: window.innerHeight * window.devicePixelRatio,
   localStorageName: 'game'
 }
