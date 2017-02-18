@@ -2,7 +2,7 @@ import Phaser from '/imports/startup/phaser-split'
 
 export default class extends Phaser.State {
   init() {
-    this.stage.backgroundColor = '#EDEEC9'
+    this.stage.backgroundColor = '#21416a'
   }
 
   preload() {
