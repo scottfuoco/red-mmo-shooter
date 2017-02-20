@@ -32,6 +32,12 @@ Meteor.startup(() => {
     }, d.id)
   })
 
+  Streamy.on('ScoreUp', (d, s) => {
+    Streamy.broadcast('upHisScore', {
+      id: d.id, score: d.score
+    }, d.id)
+  })
+
 });
 
 const connections = {};

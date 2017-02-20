@@ -36,7 +36,7 @@ export default class extends Phaser.State {
     tween.onComplete.add(addSpashText, this);
 
     function addSpashText() {
-      const text2 = this.add.text(0, 0, 'Smells like wieners.', style)
+      const text2 = this.add.text(0, 0, '\"Smells like wieners.\"', style)
       text2.setTextBounds(0, 500, this.world.width, 100);
     }
 

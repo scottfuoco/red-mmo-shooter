@@ -10,9 +10,11 @@ export default class extends Phaser.Sprite {
     this.anchor.setTo(0.5)
     this.score = this.getScore()
     this.facing = "right"
+    this.winscore = 0
   }
   increasePlayerScore() {
     this.score++
+    this.winscore++
     localStorage.setItem('myScore', this.score);
     Meteor.call('score.upsert', this.score)
   }
