@@ -13,7 +13,7 @@ export default class extends Phaser.State {
   create() {
     this.stage.disableVisibilityChange = false;
     this.physics.startSystem(Phaser.Physics.ARCADE);
-
+    this.bulletSpeed = 600;
     // generate random starting x posiiton based on world width
     const x = Math.floor(Math.random() * this.world.width);
     const y = Math.floor(Math.random() * this.world.height);
@@ -39,15 +39,15 @@ export default class extends Phaser.State {
     });
 
     this.platforms = this.game.add.physicsGroup();
-    this.platforms.create(700, 400, 'platform');
-    this.platforms.create(0, 350, 'platform');
-    this.platforms.create(1000, 200, 'platform');
+    this.platforms.create(90, 440, 'platform');
+    this.platforms.create(730, 110, 'platform');
+    this.platforms.create(730, 440, 'platform');
     this.platforms.setAll('body.immovable', true)
 
     this.goodPlatforms = this.game.add.physicsGroup();
-    this.goodPlatforms.create(0, 200, 'goodPlatform');
-    this.goodPlatforms.create(400, 450, 'goodPlatform');
-    this.goodPlatforms.create(800, 200, 'goodPlatform');
+    this.goodPlatforms.create(0, 275, 'goodPlatform');
+    this.goodPlatforms.create(820, 400, 'goodPlatform');
+    this.goodPlatforms.create(820, 150, 'goodPlatform');
     this.goodPlatforms.setAll('body.immovable', true)
 
     
@@ -193,14 +193,14 @@ export default class extends Phaser.State {
         bullet.reset(this.player.x, this.player.y);
         if (facing === 'left') {
           bullet.angle = -180;
-          bullet.body.velocity.x = -400;
+          bullet.body.velocity.x = -this.bulletSpeed;
         }
         if (facing === 'right') {
           bullet.angle = 0;
-          bullet.body.velocity.x = 400;
+          bullet.body.velocity.x =this.bulletSpeed;
         }
         Streamy.emit('bulletFire', { data: { bulletx: this.player.x, bullety: this.player.y, facing }, id: Streamy.id() });
-        this.bulletTime = this.game.time.now + 200;
+        this.bulletTime = this.game.time.now + 320;
       }
     }
   }
@@ -211,14 +211,14 @@ export default class extends Phaser.State {
     bulletFire.play()
     if (bullet) {
       //  And fire it
-      bullet.reset(x, y + 8);
+      bullet.reset(x, y + 12);
       if (facing === 'left') {
         bullet.angle = -180;
-        bullet.body.velocity.x = -400;
+        bullet.body.velocity.x = -this.bulletSpeed;
       }
       if (facing === 'right') {
         bullet.angle = 0;
-        bullet.body.velocity.x = 400;
+        bullet.body.velocity.x =this.bulletSpeed;
       }
     }
   }
@@ -230,16 +230,22 @@ export default class extends Phaser.State {
 
   collisionHandlerBulletDJ(DJ, bullet) {
     //  When a bullet hits an alien DJ we kill them both
+<<<<<<< HEAD
     if (bullet.body.velocity.x < 0) bullet.body.velocity.x = -400
     if (bullet.body.velocity.x > 0) bullet.body.velocity.x = 400
     this.player.winscore++
     this.scoreObjects[Streamy.id()].setText(`Your Score: ${this.player.winscore}`)
+=======
+    if (bullet.body.velocity.x < 0) bullet.body.velocity.x = -this.bulletSpeed
+    if (bullet.body.velocity.x > 0) bullet.body.velocity.x = this.bulletSpeed
+    //= !bullet.body.velocity.x
+>>>>>>> upstream/master
     DJ.kill();
 
     if (bullet.body.velocity.x > 0) {
-      bullet.body.velocity.x = 400;
+      bullet.body.velocity.x = this.bulletSpeed;
     } else {
-      bullet.body.velocity.x = -400;
+      bullet.body.velocity.x = -this.bulletSpeed;
     }
     // bullet.kill();
   }
@@ -265,7 +271,7 @@ export default class extends Phaser.State {
     // MY BULLETS
     this.bullets = this.add.group();
     this.bullets.enableBody = true;
-    this.bullets.createMultiple(5, 'bullet');
+    this.bullets.createMultiple(7, 'bullet');
     this.bullets.setAll('anchor.x', .5);
     this.bullets.setAll('anchor.y', .5);
     this.bullets.setAll('outOfBoundsKill', true);
