@@ -230,16 +230,11 @@ export default class extends Phaser.State {
 
   collisionHandlerBulletDJ(DJ, bullet) {
     //  When a bullet hits an alien DJ we kill them both
-<<<<<<< HEAD
     if (bullet.body.velocity.x < 0) bullet.body.velocity.x = -400
     if (bullet.body.velocity.x > 0) bullet.body.velocity.x = 400
     this.player.winscore++
     this.scoreObjects[Streamy.id()].setText(`Your Score: ${this.player.winscore}`)
-=======
-    if (bullet.body.velocity.x < 0) bullet.body.velocity.x = -this.bulletSpeed
-    if (bullet.body.velocity.x > 0) bullet.body.velocity.x = this.bulletSpeed
-    //= !bullet.body.velocity.x
->>>>>>> upstream/master
+
     DJ.kill();
 
     if (bullet.body.velocity.x > 0) {
