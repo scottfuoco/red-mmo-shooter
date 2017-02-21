@@ -52,17 +52,14 @@ export default class extends Phaser.State {
 
 
     this.djObjects = {};
-    this.scoreObjects = {}
-    this.scoreObjects[Streamy.id()] = this.add.text(100, this.textincrement, 'Your Score: 0', this.style);
-    this.textincrement += 50;
+    
+
     Streamy.on('createChallenger', d => {
 
 
       this.djObjects[d.challenger.id] = this.game.add.existing(new DJ({ game: this, x: d.challenger.player.x, y: d.challenger.player.y, asset: 'dj' }));
       this.physics.arcade.enable(this.djObjects[d.challenger.id]);
       Streamy.emit('createChallengerResponse', { newChallengerId: d.challenger.id, id: Streamy.id(), player: { x: this.player.x, y: this.player.y, alive: this.player.alive } });
-      this.scoreObjects[d.challenger.id] = this.add.text(100, this.textincrement, 'Player Score: 0', this.style);
-      this.textincrement += 50;
 
     });
 
@@ -73,18 +70,13 @@ export default class extends Phaser.State {
         this.djObjects[d.challenger.id].kill();
       }
       this.physics.arcade.enable(this.djObjects[d.challenger.id]);
-      this.scoreObjects[d.challenger.id] = this.add.text(100, this.textincrement, 'Player Score: 0', this.style);
-      this.textincrement += 100;
+
     });
     Streamy.on('spawnBullet', d => {
       this.fireEvilBullet(d.data);
     })
     Streamy.on('respawnHim', d => {
       this.djObjects[d.data.id].reset(d.data.x, d.data.y)
-    })
-    Streamy.on('upHisScore', d => {
-      console.log(d.id, d.score)
-      this.scoreObjects[d.id].setText(`Player Score: ${d.score}`)
     })
     Streamy.on('heWon', d => {
       this.gameOver(d.email)
@@ -124,16 +116,14 @@ export default class extends Phaser.State {
     music.loop = true;
     music.play();
 
-    // this.game.onPause.add(function () {
-    //   Streamy.emit('DJDie', { data: { id: Streamy.id() }, myID: Streamy.id() });
-    //   this.state.start('Splash')
-    // }, this);
+    this.game.onPause.add(function () {
+      Streamy.emit('DJDie', { data: { id: Streamy.id() }, myID: Streamy.id() });
+      this.state.start('Splash')
+    }, this);
   }
 
   update() {
-    if (this.player.winscore === 10) {
-      Streamy.emit('iWon', { id: Streamy.id(), email: Meteor.user().emails[0].address });
-    }
+
     //  Firing?
     if (this.fireButton.isDown && this.player.visible) {
       this.fireBullet(this.player.facing);
@@ -151,7 +141,7 @@ export default class extends Phaser.State {
       if (this.physics.arcade.collide(this.bullets, this.djObjects[dj], this.collisionHandlerBulletDJ, this.collisionProccessorBulletDJ, this)) {
         this.player.increasePlayerScore();
         Streamy.emit('DJDie', { data: { id: dj }, myID: Streamy.id() });
-        Streamy.emit('ScoreUp', { id: Streamy.id(), score: this.player.winscore })
+
       }
     }
   }
@@ -240,7 +230,7 @@ gameOver(email){
     if (bullet.body.velocity.x < 0) bullet.body.velocity.x = -400
     if (bullet.body.velocity.x > 0) bullet.body.velocity.x = 400
     this.player.winscore++
-    this.scoreObjects[Streamy.id()].setText(`Your Score: ${this.player.winscore}`)
+    // this.scoreObjects[Streamy.id()].setText(`Your Score: ${this.player.winscore}`)
 
     DJ.kill();
 
@@ -254,9 +244,6 @@ gameOver(email){
 
   collisionHandlerPlayerPlatform(player, platform) {
     Streamy.emit('DJDie', { data: { id: Streamy.id() }, myID: Streamy.id() });
-    this.player.winscore--
-    this.scoreObjects[Streamy.id()].setText(`Your Score: ${this.player.winscore}`)
-    Streamy.emit('ScoreUp', { id: Streamy.id(), score: this.player.winscore })
     player.kill();
   }
 
