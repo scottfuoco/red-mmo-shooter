@@ -3,14 +3,14 @@
 
 
 ## Languages and library used:
-Javascript
-Meteor
-Meteor Streamy
-Phaser
-React
-MongoDB
+- Javascript
+- Meteor
+- Meteor Streamy
+- Phaser
+- React
+- MongoDB
 ## Tools used:
-Photoshop
-Garage band
+- Photoshop
+- Garage band
 
-## What did I learn?
+## What did We learn?
