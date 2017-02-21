@@ -46,6 +46,7 @@ Meteor.startup(() => {
     }, d.id)
   })
   Streamy.on('ScoreUp', (d, s) => {
+    console.log("increase Score")
     Streamy.broadcast('upHisScore', {
       id: d.id, score: d.score
     }, d.id)
