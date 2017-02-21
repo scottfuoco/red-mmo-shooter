@@ -3,7 +3,9 @@ import './../imports/startup/register_api'
 
 Meteor.startup(() => {
   // code to run on server at startup
-  
+
+  let numOfConnections = 0;
+
   Streamy.on('clientMove', (d, s) => {
     Streamy.broadcast('movement', { data: { direction: d.data, id: d.id, x: d.data.x, y: d.data.y } }, d.id);
   });
@@ -13,6 +15,10 @@ Meteor.startup(() => {
   })
 
   Streamy.on('newChallenger', (d, s) => {
+    if(numberofConnections >= 4) {
+      Streamy.emit('gameFull', {}, Streamy.sockets(d.id))
+    }
+    numberofConnections++;
     Streamy.broadcast('createChallenger', { challenger: { id: d.id, player: { x: d.player.x, y: d.player.y } } }, d.id);
   })
 
@@ -39,8 +45,6 @@ Meteor.startup(() => {
   })
 
 });
-
-const connections = {};
 
 Meteor.onConnection(() => {
 

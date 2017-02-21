@@ -85,8 +85,11 @@ export default class extends Phaser.State {
     Streamy.on('upHisScore', d => {
       console.log(d.id, d.score)
       this.scoreObjects[d.id].setText(`Player Score: ${d.score}`)
-    }
-  )
+    })
+    Streamy.on('gameFull', d => {
+       this.state.start('GameFull')   
+      
+    })
 
     this.firingTimer = 0;
     this.bulletTime = 0;

@@ -8,6 +8,7 @@ import SplashState from './state/Splash'
 import ScoreState from './state/Score'
 import GameState from './state/Game'
 import LoginState from './state/Login'
+import GameFullState from './state/GameFull'
 import config from './config'
 
 import './styles.css'
@@ -25,6 +26,7 @@ class Game extends Phaser.Game {
     this.state.add('Score', ScoreState, false);
     this.state.add('Login' , LoginState, false);
     this.state.add('Game', GameState, false);
+    this.state.add('GameFull', GameFullState, false);
     this.state.start('Boot');
   }
 }

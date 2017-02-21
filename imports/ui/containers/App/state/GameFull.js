@@ -6,7 +6,7 @@ export default class extends Phaser.State {
   }
 
   preload() {
-    let text = this.add.text(this.world.centerX, this.world.centerY, 'Hi There', { font: '16px Arial', fill: '#dddddd', align: 'center' })
+    let text = this.add.text(this.world.centerX, this.world.centerY, 'Sorry Game Full Try Again Later', { font: '16px Arial', fill: '#dddddd', align: 'center' })
     text.anchor.setTo(0.5, 0.5);
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
   }
