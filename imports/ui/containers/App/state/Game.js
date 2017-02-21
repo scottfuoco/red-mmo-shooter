@@ -31,7 +31,7 @@ export default class extends Phaser.State {
 
     // send server players coordinates to broadcast to all other clients
     Streamy.emit('newChallenger', { id: Streamy.id(), player: { x, y } });
-    
+
 
     Streamy.on('movement', d => {
       this.djObjects[d.data.id].x = d.data.x;
@@ -50,7 +50,7 @@ export default class extends Phaser.State {
     this.goodPlatforms.create(820, 150, 'goodPlatform');
     this.goodPlatforms.setAll('body.immovable', true)
 
-    
+
     this.djObjects = {};
     this.scoreObjects = {}
     this.scoreObjects[Streamy.id()] = this.add.text(100, this.textincrement, 'Your Score: 0', this.style);
@@ -62,7 +62,7 @@ export default class extends Phaser.State {
       this.physics.arcade.enable(this.djObjects[d.challenger.id]);
       Streamy.emit('createChallengerResponse', { newChallengerId: d.challenger.id, id: Streamy.id(), player: { x: this.player.x, y: this.player.y, alive: this.player.alive } });
       this.scoreObjects[d.challenger.id] = this.add.text(100, this.textincrement, 'Player Score: 0', this.style);
-      this.textincrement += 100;
+      this.textincrement += 50;
 
     });
 
@@ -85,8 +85,10 @@ export default class extends Phaser.State {
     Streamy.on('upHisScore', d => {
       console.log(d.id, d.score)
       this.scoreObjects[d.id].setText(`Player Score: ${d.score}`)
-    }
-  )
+    })
+    Streamy.on('heWon', d => {
+      this.gameOver(d.email)
+    })
 
     this.firingTimer = 0;
     this.bulletTime = 0;
@@ -122,13 +124,16 @@ export default class extends Phaser.State {
     music.loop = true;
     music.play();
 
-    //   this.game.onPause.add(function () {
-    //     Streamy.emit('DJDie', { data: { id: Streamy.id() }, myID: Streamy.id() });
-    //     this.state.start('Splash')   
-    //   }, this);
+    // this.game.onPause.add(function () {
+    //   Streamy.emit('DJDie', { data: { id: Streamy.id() }, myID: Streamy.id() });
+    //   this.state.start('Splash')
+    // }, this);
   }
 
   update() {
+    if (this.player.winscore === 10) {
+      Streamy.emit('iWon', { id: Streamy.id(), email: Meteor.user().emails[0].address });
+    }
     //  Firing?
     if (this.fireButton.isDown && this.player.visible) {
       this.fireBullet(this.player.facing);
@@ -197,7 +202,7 @@ export default class extends Phaser.State {
         }
         if (facing === 'right') {
           bullet.angle = 0;
-          bullet.body.velocity.x =this.bulletSpeed;
+          bullet.body.velocity.x = this.bulletSpeed;
         }
         Streamy.emit('bulletFire', { data: { bulletx: this.player.x, bullety: this.player.y, facing }, id: Streamy.id() });
         this.bulletTime = this.game.time.now + 320;
@@ -218,7 +223,7 @@ export default class extends Phaser.State {
       }
       if (facing === 'right') {
         bullet.angle = 0;
-        bullet.body.velocity.x =this.bulletSpeed;
+        bullet.body.velocity.x = this.bulletSpeed;
       }
     }
   }
@@ -227,7 +232,9 @@ export default class extends Phaser.State {
     bullet.kill();
 
   }
-
+gameOver(email){
+  this.state.start('GameOver', false, false, email)
+}
   collisionHandlerBulletDJ(DJ, bullet) {
     //  When a bullet hits an alien DJ we kill them both
     if (bullet.body.velocity.x < 0) bullet.body.velocity.x = -400
@@ -247,7 +254,7 @@ export default class extends Phaser.State {
 
   collisionHandlerPlayerPlatform(player, platform) {
     Streamy.emit('DJDie', { data: { id: Streamy.id() }, myID: Streamy.id() });
-    this.player.winscore --
+    this.player.winscore--
     this.scoreObjects[Streamy.id()].setText(`Your Score: ${this.player.winscore}`)
     Streamy.emit('ScoreUp', { id: Streamy.id(), score: this.player.winscore })
     player.kill();

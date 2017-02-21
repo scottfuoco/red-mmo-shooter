@@ -7,6 +7,7 @@ import BootState from './state/Boot'
 import SplashState from './state/Splash'
 import ScoreState from './state/Score'
 import GameState from './state/Game'
+import GameOverState from './state/GameOver'
 import LoginState from './state/Login'
 import config from './config'
 

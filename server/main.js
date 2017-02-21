@@ -31,7 +31,11 @@ Meteor.startup(() => {
       }
     }, d.id)
   })
-
+  Streamy.on('iWon', (d, s) => {
+    Streamy.broadcast('heWon', {
+      winner: d.email
+    }, d.id)
+  })
   Streamy.on('ScoreUp', (d, s) => {
     Streamy.broadcast('upHisScore', {
       id: d.id, score: d.score
