@@ -16,13 +16,11 @@ Meteor.startup(() => {
 
 
   Streamy.on('newChallenger', (d, s) => {
-    if(numOfConnections >= 4) {
-      Streamy.emit('gameFull', {}, Streamy.sockets(d.id))
-      console.log(numOfConnections);
-      console.log('seeeeeeeeeeeeeeessss');
-      return;
-    }
-    numOfConnections++;
+    // if(numOfConnections >= 4) {
+    //   Streamy.emit('gameFull', {}, Streamy.sockets(d.id))
+    //   return;
+    // }
+    // numOfConnections++;
     Streamy.broadcast('createChallenger', { challenger: { id: d.id, player: { x: d.player.x, y: d.player.y } } }, d.id);
   })
 
