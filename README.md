@@ -14,7 +14,7 @@
 - Photoshop
 - Garage band
 
-## What did we learn?O
+## What did we learn?
 - How to create a multiplayer game
 - Syncing of game actions across clients
 - Minimize data transactions and data size
