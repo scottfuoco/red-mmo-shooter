@@ -58,7 +58,7 @@ export default class extends Phaser.State {
       }
 
     } else {
-      let text2 = this.add.text(this.world.centerX - 500, this.world.centerY, 'Log the fuck in', { font: '35px Arial', fill: '#000', align: 'center' })
+      let text2 = this.add.text(this.world.centerX - 500, this.world.centerY, 'Log in please', { font: '35px Arial', fill: '#000', align: 'center' })
     }
   }
 }
