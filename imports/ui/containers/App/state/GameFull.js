@@ -6,7 +6,7 @@ export default class extends Phaser.State {
   }
 
   preload() {
-    let text = this.add.text(this.world.centerX, this.world.centerY, 'Sorry Game Full Try Again Later', { font: '16px Arial', fill: '#dddddd', align: 'center' })
+    let text = this.add.text(this.world.centerX, this.world.centerY, 'Sorry Game Full Try Again Later', { font: '16px Arial', fill: '#000', align: 'center' })
     text.anchor.setTo(0.5, 0.5);
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
   }
@@ -14,9 +14,5 @@ export default class extends Phaser.State {
   render() {
   }
   update(){
-    if(Meteor.userId()){
-      this.state.start('Splash')
-    }
-    
   }
 }
