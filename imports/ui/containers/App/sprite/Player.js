@@ -13,6 +13,7 @@ export default class extends Phaser.Sprite {
     this.winscore = 0
   }
   increasePlayerScore() {
+    console.log("up stuff")
     this.score++
     this.winscore++
     localStorage.setItem('myScore', this.score);
