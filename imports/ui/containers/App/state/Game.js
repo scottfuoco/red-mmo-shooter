@@ -229,7 +229,6 @@ gameOver(email){
     //  When a bullet hits an alien DJ we kill them both
     if (bullet.body.velocity.x < 0) bullet.body.velocity.x = -400
     if (bullet.body.velocity.x > 0) bullet.body.velocity.x = 400
-    this.player.winscore++
     // this.scoreObjects[Streamy.id()].setText(`Your Score: ${this.player.winscore}`)
 
     DJ.kill();
