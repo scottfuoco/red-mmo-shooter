@@ -9,6 +9,7 @@ import ScoreState from './state/Score'
 import GameState from './state/Game'
 import GameOverState from './state/GameOver'
 import LoginState from './state/Login'
+import GameFullState from './state/GameFull'
 import config from './config'
 
 import './styles.css'
@@ -27,6 +28,7 @@ class Game extends Phaser.Game {
     this.state.add('Login' , LoginState, false);
     this.state.add('GameOver', GameOverState, false)
     this.state.add('Game', GameState, false);
+    this.state.add('GameFull', GameFullState, false);
     this.state.start('Boot');
   }
 }

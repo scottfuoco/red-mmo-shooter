@@ -22,7 +22,7 @@ export default class extends Phaser.State {
     })
     this.goToGame = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     this.goToSplash = this.input.keyboard.addKey(Phaser.Keyboard.H);
-    const style = { font: "bold 32px Arial", fill: "#000", boundsAlignH: "cnter", boundsAlignV: "middle" };
+    const style = { font: "bold 32px Arial", fill: "#000", boundsAlignH: "center", boundsAlignV: "middle" };
     const text0 = this.add.text(0, 0, 'Welcome to play game, press space and play for fun.', style)
     const text = this.add.text(0, 100, `Your score is ${localStorage.getItem('myScore')}`, style)
     const text1 = this.add.text(0, 1500, `HIGHSCORE`, style)
@@ -55,7 +55,7 @@ export default class extends Phaser.State {
       }
 
     } else {
-      let text2 = this.add.text(this.world.centerX - 500, this.world.centerY, 'Log the fuck in', { font: '35px Arial', fill: '#000', align: 'center' })
+      let text2 = this.add.text(this.world.centerX - 500, this.world.centerY, 'Please Log in', { font: '35px Arial', fill: '#000', align: 'center' })
     }
   }
 }
