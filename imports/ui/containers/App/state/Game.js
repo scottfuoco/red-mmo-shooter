@@ -78,17 +78,14 @@ export default class extends Phaser.State {
     Streamy.on('respawnHim', d => {
       this.djObjects[d.data.id].reset(d.data.x, d.data.y)
     })
-<<<<<<< HEAD
-=======
+
     Streamy.on('upHisScore', d => {
-      console.log(d.id, d.score)
       this.scoreObjects[d.id].setText(`Player Score: ${d.score}`)
     })
     Streamy.on('gameFull', d => {
        this.state.start('GameFull')   
     })
       
->>>>>>> upstream/master
     Streamy.on('heWon', d => {
       this.gameOver(d.email)
     })

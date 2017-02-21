@@ -14,6 +14,7 @@ Meteor.startup(() => {
     Streamy.broadcast('killDJ', { data: { id: d.data.id } }, d.myID)
   })
 
+
   Streamy.on('newChallenger', (d, s) => {
     if(numOfConnections >= 4) {
       Streamy.emit('gameFull', {}, Streamy.sockets(d.id))
